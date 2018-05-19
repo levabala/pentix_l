@@ -95,7 +95,7 @@ function Renderer(div, board){
 
     function drawFigure(){
         figureNested.clear();        
-        board.figure.figureCellsIteration((cell) => {
+        r.board.figure.figureCellsIteration((cell) => {
             var rect = figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill({color: "lightblue"});
             return true;
         });

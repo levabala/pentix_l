@@ -26,9 +26,9 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
         if (collisionChecker(comparingFigure)){
             figure.rotation = newRotation;
             update();
-        }
-        else 
-            return false;
+            return true;
+        }         
+        return false;
     }
 
     this.mirror = function(){
@@ -37,10 +37,25 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
         if (collisionChecker(comparingFigure)){
             figure.mirrorState = newMirrorState;
             update();
-        }
-        else 
-            return false;
+            return true;
+        }        
+        return false;
     }
+
+
+
+
+
+
+    /*
+
+
+    какая-то дичь с коллизией
+    неверно генерится comparingFigure
+
+
+
+    */
 
     this.drop = function(){        
         while(figure.move(1))
@@ -75,17 +90,19 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     }
 
     this.figureCellsIteration = function(action){
-        var maxTranspose = 1 + figure.layers * 2;
-        var cell = figure.center.clone();
-        var i = 0;        
-        var rotation = figure.rotation;
+        var f = figure.clone();
 
-        if (figure.code.length <= i)
+        var maxTranspose = 1 + f.layers * 2;
+        var cell = f.center.clone();
+        var i = 0;        
+        var rotation = f.rotation;
+
+        if (f.code.length <= i)
         return;
         
         //check center
         //console.log(cell);
-        if (figure.code[i])
+        if (f.code[i])
             if (!action(cell))
                 return;
         i++;
@@ -94,23 +111,23 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
             function processAxis(){                
                 var step = vectorsMap[rotation].clone().multiply(t);
                 //console.log("step:",step)
-                while (step.x != 0 && figure.code.length > i){            
+                while (step.x != 0 && f.code.length > i){            
                     var delta = Math.sign(step.x);
                     cell.add(new P(delta, 0))
                     //console.log(cell);           
-                    if (figure.code[i])
+                    if (f.code[i])
                         if (!action(cell))
-                            break;            
+                            return;            
                     i++;     
                     step.x -= delta;           
                 }
-                while (step.y != 0 && figure.code.length > i){            
+                while (step.y != 0 && f.code.length > i){            
                     var delta = Math.sign(step.y);
                     cell.add(new P(0, delta))
                     //console.log(cell);           
-                    if (figure.code[i])
+                    if (f.code[i])
                         if (!action(cell))
-                            break;            
+                            return;            
                     i++;                
                     step.y -= delta;           
                 }
@@ -118,11 +135,11 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
 
             //by first axis    
             processAxis();
-            if (figure.code.length <= i)
+            if (f.code.length <= i)
                     break;
 
             //now rotate
-            rotation += figure.mirrorState * 2 - 1; //0 -> -1 && 1 -> 1
+            rotation += f.mirrorState * 2 - 1; //0 -> -1 && 1 -> 1
             if (rotation > 3)
                 rotation = 0;
             else if (rotation < 0)
@@ -130,11 +147,11 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
 
             //by second axis
             processAxis();
-            if (figure.code.length <= i)
+            if (f.code.length <= i)
                     break;
 
             //now rotate
-            rotation += figure.mirrorState * 2 - 1; 
+            rotation += f.mirrorState * 2 - 1; 
             if (rotation > 3)
                 rotation = 0;
             else if (rotation < 0)
@@ -144,5 +161,9 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
 
     function update(){
         figure.timecode = Date.now();
+    }
+    
+    this.clone = function(){
+        return new Figure(figure.center.clone(), figure.code, collisionChecker, dropCallback, figure.rotation, figure.mirrorState);
     }
 }

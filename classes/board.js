@@ -46,11 +46,15 @@ function Board(width = 14, height = 25){
 
     function canPlaceFigure(figure){
         var clear = true;
+        var cells = [];
         figure.figureCellsIteration((cell) => {
             var res = board.cells[cell.x][cell.y] == 0;
+            cells.push(cell);
             clear = res;
             return res;
         });
+        if (!clear)
+            console.log("COLLISION")
         return clear;
     }        
 
