@@ -17,7 +17,11 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
 
     this.rotate = function(delta){
         var newRotation = figure.rotation + delta;
-        newRotation = inRange(newRotation, 0, 3);        
+        if (newRotation > 3)     
+            newRotation = 0;
+        else
+            if (newRotation < 0)     
+                newRotation = 3;
         updateComparingFigure({"rotation": newRotation});
         if (collisionChecker(comparingFigure)){
             figure.rotation = newRotation;
@@ -39,10 +43,8 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     }
 
     this.drop = function(){        
-        while(figure.move(1)){
-            dropCallback();
-            return;
-        }
+        while(figure.move(1))
+            dropCallback();                    
     }
 
     var vectorsMap = {
@@ -66,10 +68,10 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
         updateComparingFigure({"center": newCenter});
         if (collisionChecker(comparingFigure)){
             figure.center = newCenter;
-            update();
+            update();            
+            return true;
         }
-        else 
-            return false;
+        return false;             
     }
 
     this.figureCellsIteration = function(action){

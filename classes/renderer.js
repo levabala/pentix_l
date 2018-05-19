@@ -20,7 +20,7 @@ function Renderer(div, board){
 
     this.rescale = function(){        
         mainGroup.scale(1 / scale, 1 / scale);
-        scale = Math.round(Math.min(div.offsetWidth / board.width, div.offsetHeight / board.height) * 100) / 100;                
+        scale = Math.round(Math.min(div.offsetWidth * 0.9 / board.width, div.offsetHeight * 0.9 / board.height) * 100) / 100;                
         r.scaledWidth = div.offsetWidth / scale;
         r.scaledHeight = div.offsetHeight / scale;
         mainGroup.scale(scale, scale);

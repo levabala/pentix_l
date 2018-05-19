@@ -3,9 +3,7 @@ function Game(preset){
     this.board = new Board();     
 
     //defaults
-    this.fall_interval = 1000;
-    this.slide_start_delay = 100;
-    this.slide_interval = 10;    
+    this.fall_interval = 1000;    
 
     this.board.initMap();
     for (var p in preset)
@@ -42,6 +40,6 @@ function Game(preset){
         },
     }
     this.command = function(command){
-
+        commandsMap[command]();
     }
 }
