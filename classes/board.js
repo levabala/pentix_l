@@ -49,12 +49,13 @@ function Board(width = 14, height = 25){
         var cells = [];
         figure.figureCellsIteration((cell) => {
             var res = board.cells[cell.x][cell.y] == 0;
-            cells.push(cell);
-            clear = res;
-            return res;
-        });
+            cells.push(cell);            
+            clear = res;            
+            return res;            
+        });        
         if (!clear)
             console.log("COLLISION")
+        console.log(cells)
         return clear;
     }        
 

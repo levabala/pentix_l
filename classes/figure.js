@@ -113,28 +113,31 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
                 //console.log("step:",step)
                 while (step.x != 0 && f.code.length > i){            
                     var delta = Math.sign(step.x);
-                    cell.add(new P(delta, 0))
+                    cell.add(new P(delta, 0))                    
                     //console.log(cell);           
                     if (f.code[i])
-                        if (!action(cell))
-                            return;            
+                        if (!action(cell.clone()))
+                            return false;            
                     i++;     
                     step.x -= delta;           
                 }
                 while (step.y != 0 && f.code.length > i){            
                     var delta = Math.sign(step.y);
-                    cell.add(new P(0, delta))
+                    cell.add(new P(0, delta))                    
                     //console.log(cell);           
                     if (f.code[i])
-                        if (!action(cell))
-                            return;            
+                        if (!action(cell.clone()))
+                            return false;            
                     i++;                
                     step.y -= delta;           
                 }
+
+                return true;
             }
 
             //by first axis    
-            processAxis();
+            if (!processAxis())            
+                return;
             if (f.code.length <= i)
                     break;
 
@@ -146,7 +149,8 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
                 rotation = 3;
 
             //by second axis
-            processAxis();
+            if (!processAxis())            
+                return;
             if (f.code.length <= i)
                     break;
 
