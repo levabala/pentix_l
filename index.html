@@ -45,9 +45,10 @@
                 <br>  
         </div> 
         
-        <div id="div_game_stats" style="position: absolute; right: 10px; top: 10px">
+        <div id="div_game_stats" style="position: absolute; right: 10px; top: 10px; text-align: left; width: 180px">
                 Lines done: {{lines_done}}/{{lines_need}}<br>
                 Game duration: {{game_duration}}<br>
+                <md-button class="md-raised md-accent" v-on:click="restart">Restart</md-button>
         </div> 
     </div>
     

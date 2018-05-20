@@ -27,6 +27,7 @@ function Game(preset){
     this.fall_interval = 1000; 
     
     //stats
+    this.isPlaying = false;
     this.game_duration = 0;
     this.lines_done = 0;
     this.lines_need = 20;
@@ -38,13 +39,16 @@ function Game(preset){
     var fallTimeout = null;
     var startTime = 0;        
     this.start = function(){
+        game.isPlaying = true;
+
         game.lines_done = 0;
         game.board.initMap();
         game.board.initFigure(game.generateRandomFigure());
-        game.continue();        
+        clearTimeout(fallTimeout);
+        game.continue();                    
     }
 
-    setInterval(timeUpdate, 33);
+    var timeInterval = null;
     function timeUpdate(){
         var nowTime = Date.now();
         var elapsed = nowTime - startTime;        
@@ -52,17 +56,21 @@ function Game(preset){
     }
 
     function fallTick(){
+        if (!game.isPlaying)
+            return;
         fall(); 
         fallTimeout = setTimeout(fallTick, game.fall_interval);        
     }
 
     this.pause = function(){
         clearTimeout(fallTimeout);
+        clearInterval(timeInterval);
     }
 
     this.continue = function(){
-        startTime = Date.now();
+        startTime = Date.now();        
         fallTick();
+        timeInterval = setInterval(timeUpdate, 33);
     }
 
     function fall(){
@@ -77,9 +85,13 @@ function Game(preset){
 
     function win(){
         console.warn("WON")
+        game.pause();
     }
 
     function lose(){
         console.warn("GAME OVER")
+        game.pause();
+
+        game.isPlaying = false;
     }
 }

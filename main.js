@@ -15,15 +15,27 @@ var app = new Vue({
         game_duration: "0m:0s:0ms"
     },
     watch: {
-        "fall_speed": function(value, oldValue){
+        fall_speed: function(value, oldValue){
             controller.set_falling_speed(value);
         },
-        "sliding_start_delay": function(value, oldValue){
+        sliding_start_delay: function(value, oldValue){
             controller.set_sliding_start_delay(value);
         },
-        "sliding_interval": function(value, oldValue){
+        sliding_interval: function(value, oldValue){
             controller.set_sliding_interval(value);
         }
+    },
+    methods: {
+        restart: function(){
+            g.start();
+        }
+    },
+    mounted() {
+        var t = this;
+        window.addEventListener("keyup", e => {
+            if (e.keyCode == 13 && !g.isPlaying)
+                t.restart();
+        });
     }
 });
 

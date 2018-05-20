@@ -35,6 +35,7 @@ function ControllerKeyboard(game, control_triggers = {}){
         slide_right_start: null,
         slide_down_start: null,
     };
+    var slide_connected_keys = [39, 33, 37, 36, 40]
     var keydown_keys_map_revert = {};
     var keys_down = {};    
 
@@ -56,7 +57,7 @@ function ControllerKeyboard(game, control_triggers = {}){
         if (!(k in keys_down))
             keys_down[k] = true;
         else 
-            if (keys_down[k] == true) //we do not count repeated "keydown" events
+            if (slide_connected_keys.indexOf(k) != -1 && keys_down[k] == true) //we do not count repeated "keydown" events
                 return;
 
         keys_down[k] = true;

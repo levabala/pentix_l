@@ -23,22 +23,23 @@ function Board(getNextFigure, boardStackedCallback, lineClearedCallback, width =
         
         for (var x = 0; x < board.width; x++)
             board.cells[x][board.height] = 1;
+
+        update();
     }    
 
     //figure managing    
     var initialPosition = new P(6, 1);
     this.initFigure = function(figure){
-        figure.center = initialPosition;
-
+        figure.center = initialPosition;        
+        figure.collisionChecker = collisionChecker;
+        figure.dropCallback = onDrop;                
+        board.figure = figure;                  
+        
         if (!canPlaceFigure(figure)){
             //game over
             boardStackedCallback();
             return;
-        }            
-
-        figure.collisionChecker = collisionChecker;
-        figure.dropCallback = onDrop;                
-        board.figure = figure;                    
+        }                    
     }    
 
     function onDrop(){
