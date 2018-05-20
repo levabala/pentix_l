@@ -28,7 +28,7 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
     }    
 
     //figure managing    
-    var initialPosition = new P(Math.ceil(board.width / 2) - 1, 2);
+    var initialPosition = new P(Math.ceil(board.width / 2) - 1, 1);
     this.initFigure = function(figure){
         figure.center = initialPosition;        
         figure.collisionChecker = collisionChecker;
