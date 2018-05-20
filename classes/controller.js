@@ -2,8 +2,20 @@ function Controller(game){
     var controller = this;
 
     //defaults    
-    //this.slide_start_delay = 100;
+    this.start_sliding_delay = 100;
     this.slide_interval = 10;    
+    
+    this.set_falling_speed = function(value){
+        game.fall_interval = 1 / value * 1000;
+    }
+
+    this.set_sliding_start_delay = function(value){
+        controller.start_sliding_delay = value;
+    }
+
+    this.set_sliding_interval = function(value){
+        controller.slide_interval = value;
+    }
 
     this.move_right = function(){
         console.log("action:", "move_right")

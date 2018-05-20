@@ -26,13 +26,18 @@ function Game(preset){
     for (var p in preset)
         this[p] = preset[p];
 
-    var fallIntervalPtr = null;
+    var fallTimeout = null;
     this.start = function(){
-        fallIntervalPtr = setInterval(() => {fall();}, game.fall_interval);
+        fallTick();
+    }
+
+    function fallTick(){
+        fall(); 
+        fallTimeout = setTimeout(fallTick, game.fall_interval);        
     }
 
     this.pause = function(){
-        clearInterval(fallIntervalPtr);
+        clearTimeout(fallTimeout);
     }
 
     function fall(){

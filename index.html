@@ -1,23 +1,58 @@
+<!doctype html>
 <html>
-    <head>
-        <title>PENTIX++</title>
-        <!--libs-->
-        <script src="libs/svg.min.js"></script>
-        <!--end libs-->
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">    
+    <link rel="stylesheet" href="style.css">
 
-        <!--internal-->
-        <script src="additional/assemblies.js"></script>
-        <script src="classes/commands.js"></script>
-        <script src="classes/controller.js"></script>
-        <script src="classes/controller_keyboard.js"></script>
-        <script src="classes/board.js"></script>
-        <script src="classes/figure.js"></script>
-        <script src="classes/game.js"></script>        
-        <script src="classes/renderer.js"></script>        
-        <!--end internal-->
-    </head>
-    <body>
-        <div id="gameboard_div" style="bottom: 10px; left: 10px; right: 10px; position:absolute"></div>
-        <script src="main.js"></script>
-    </body>
+    <title>PENTIX++</title>
+    <!--libs-->
+    <link rel="stylesheet" href="libs/google-material.css">
+    <link rel="stylesheet" href="libs/vue-material.css">
+    <link rel="stylesheet" href="libs/vue-material-default.css">
+    <script src="libs/svg.min.js"></script>
+    <script src="libs/jquery.min.js"></script>
+    <!--end libs-->
+
+    <!--internal-->
+    <script src="additional/assemblies.js"></script>
+    <script src="classes/commands.js"></script>
+    <script src="classes/controller.js"></script>
+    <script src="classes/controller_keyboard.js"></script>
+    <script src="classes/board.js"></script>
+    <script src="classes/figure.js"></script>
+    <script src="classes/game.js"></script>        
+    <script src="classes/renderer.js"></script>        
+    <!--end internal-->
+  </head>
+
+  <body>
+    <div id="app" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
+        <div id="gameboard_div" class="center"></div>                             
+        <div id="controls_div" style="position: absolute; left: 10px; top: 10px">
+                Fall speed:<br>
+                {{ fall_speed }} cells/second<br>
+                <input type="range" min="1" max="20" v-model="fall_speed" class="slider" id="myRange">
+                <br>  
+                Start sliding delay:<br>
+                {{ sliding_start_delay }} milliseconds<br>
+                <input type="range" min="1" max="250" v-model="sliding_start_delay" class="slider" id="myRange">
+                <br>
+                Sliding interval:<br>
+                {{ sliding_interval }} milliseconds<br>
+                <input type="range" min="1" max="100" v-model="sliding_interval" class="slider" id="myRange">
+                <br>  
+        </div> 
+    </div>
+    
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-material@beta"></script>    
+    <script src="main.js"></script>
+    <script>
+        //UI script
+        $('.slider').on('mouseup' , function(){
+            this.blur();
+        });
+    </script>
+  </body>
 </html>

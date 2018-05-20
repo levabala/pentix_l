@@ -1,0 +1,10 @@
+body {
+    font-size: 15px;
+}
+
+.center {
+    margin: auto;
+    width: 50%;
+    height: 100%;    
+    padding: 10px;
+}

@@ -37,7 +37,7 @@ function Renderer(div, board){
         r.rescale();                   
         
         var rect = scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                
-        scaleNested.center(r.scaledWidth / 4, 0);//r.scaledHeight / 2);        
+        //scaleNested.center(r.scaledWidth / 4, 0);//r.scaledHeight / 2);        
         //mainGroup.add(rect)
 
         drawCells();
