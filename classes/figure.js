@@ -8,6 +8,7 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     this.timecode = Date.now();
 
     this.replaceFigure = function(figure2){
+        figure.center = figure2.center.clone();
         figure.code = figure2.code;        
         figure.rotation = figure2.rotation;        
         figure.mirrorState = figure2.mirrorState;        
@@ -41,21 +42,6 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
         }        
         return false;
     }
-
-
-
-
-
-
-    /*
-
-
-    какая-то дичь с коллизией
-    неверно генерится comparingFigure
-
-
-
-    */
 
     this.drop = function(){        
         while(figure.move(1))
@@ -103,7 +89,7 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
         //check center
         //console.log(cell);
         if (f.code[i])
-            if (!action(cell))
+            if (!action(cell.clone()))
                 return;
         i++;
 
