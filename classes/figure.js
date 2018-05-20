@@ -6,6 +6,8 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     this.mirrorState = mirrorState;
     this.layers = 1 + ((code.length > 8) ? 1 : 0);
     this.timecode = Date.now();
+    this.collisionChecker = collisionChecker;
+    this.dropCallback = dropCallback;
 
     this.replaceFigure = function(figure2){
         figure.center = figure2.center.clone();
@@ -24,7 +26,7 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
             if (newRotation < 0)     
                 newRotation = 3;
         updateComparingFigure({"rotation": newRotation});
-        if (collisionChecker(comparingFigure)){
+        if (figure.collisionChecker(comparingFigure)){
             figure.rotation = newRotation;
             update();
             return true;
@@ -35,7 +37,7 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     this.mirror = function(){
         var newMirrorState = Math.abs(figure.mirrorState - 1);
         updateComparingFigure({"mirrorState": newMirrorState});
-        if (collisionChecker(comparingFigure)){
+        if (figure.collisionChecker(comparingFigure)){
             figure.mirrorState = newMirrorState;
             update();
             return true;
@@ -44,8 +46,7 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     }
 
     this.drop = function(){        
-        while(figure.move(1))
-            dropCallback();                    
+        while(figure.move(1));            
     }
 
     var vectorsMap = {
@@ -67,11 +68,13 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     this.move = function(direction){         
         var newCenter = figure.center.clone().add(vectorsMap[direction]);
         updateComparingFigure({"center": newCenter});
-        if (collisionChecker(comparingFigure)){
+        if (figure.collisionChecker(comparingFigure)){
             figure.center = newCenter;
             update();            
             return true;
         }
+        if (direction == 1)
+            figure.dropCallback();
         return false;             
     }
 

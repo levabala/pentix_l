@@ -1,6 +1,23 @@
 function Game(preset){
-    var game = this;        
-    this.board = new Board();     
+    var game = this;  
+        
+    this.figureCodes = [
+        [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], //гы
+        [1, 1, 0, 0, 0, 1, 1, 1],
+        [1, 0 ,0, 1, 0, 0, 1, 1, 1],
+        [1, 0, 0, 1, 0, 1, 0, 1, 1],
+        [1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,1], //гы х2
+        [1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 0, 1, 0, 1, 0, 1]        
+    ];    
+    this.generateRandomFigure = function(){
+        var index = Math.floor(Math.random() * (game.figureCodes.length - 1));
+        var rotation = Math.floor(Math.random() * 3);
+        var mirrorState = Math.floor(Math.random() * 2);        
+        return new Figure(new P(0, 0), game.figureCodes[index], null, null, rotation, mirrorState);
+    }    
+
+    this.board = new Board(game.generateRandomFigure, lineCleared); 
 
     //defaults
     this.fall_interval = 1000;    
@@ -20,26 +37,9 @@ function Game(preset){
 
     function fall(){
         game.board.figure.move(1);
-    }    
-    
-    var commandsMap = {
-        RIGHT: () => {
-            game.board.figure.move(0);
-        },
-        DOWN: () => {
-            game.board.figure.move(1);
-        },
-        LEFT: () => {
-            game.board.figure.move(2);
-        },                
-        DROP: () => {
-            game.board.dropFigure();
-        },
-        MIRROR: () => {
-            
-        },
-    }
-    this.command = function(command){
-        commandsMap[command]();
+    }        
+
+    function lineCleared(){
+        console.warn("WOW!");
     }
 }

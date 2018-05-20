@@ -1,4 +1,4 @@
-function Board(width = 14, height = 25){
+function Board(getNextFigure = ()=>{}, lineClearedCallback = ()=> {}, width = 14, height = 25){
     var board = this;
     this.width = width;
     this.height = height;    
@@ -27,17 +27,52 @@ function Board(width = 14, height = 25){
 
     //figure managing    
     var initialPosition = new P(6, 1);
-    this.initFigure = function(code){
-        var figure = new Figure(initialPosition, code, collisionChecker, onDrop);
+    this.initFigure = function(figure){
+        figure.center = initialPosition;
+        figure.collisionChecker = collisionChecker;
+        figure.dropCallback = onDrop;        
         board.figure = figure;        
     }    
 
     function onDrop(){
+        placeFigure(board.figure);
         checkForFullLine();
+
+        board.initFigure(getNextFigure());
     }
 
     function checkForFullLine(){
+        for (var y = board.height - 1; y >= 0; y--){ 
+            var full = true;            
+            for (var x = 0; x < board.width; x++)
+                if (board.cells[x][y] != 1){
+                    full = false; 
+                    break;
+                }            
+            if (full){
+                removeLine(y);
+                slideAllDown(y);
+                lineClearedCallback();
+                checkForFullLine();
+                return;
+            }
+        }
+    }
 
+    function removeLine(y){
+        for (var x = 0; x < board.width; x++)
+            board.cells[x][y] = 0;
+    }
+
+    function slideAllDown(low_y){
+        for (var y = low_y - 1; y >= 0; y--){
+            for (var x = 0; x < board.width; x++){
+                if (board.cells[x][y] == 0)
+                    continue;
+                board.cells[x][y] = 0;
+                board.cells[x][y + 1] = 1;
+            }
+        }
     }
 
     function collisionChecker(figure){        
@@ -45,17 +80,12 @@ function Board(width = 14, height = 25){
     }
 
     function canPlaceFigure(figure){
-        var clear = true;
-        var cells = [];
+        var clear = true;        
         figure.figureCellsIteration((cell) => {
-            var res = board.cells[cell.x][cell.y] == 0;
-            cells.push(cell);            
+            var res = board.cells[cell.x][cell.y] == 0;            
             clear = res;            
             return res;            
         });        
-        if (!clear)
-            console.log("COLLISION")
-        console.log(cells)
         return clear;
     }        
 
