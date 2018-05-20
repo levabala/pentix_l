@@ -1,4 +1,4 @@
-function Board(getNextFigure = ()=>{}, lineClearedCallback = ()=> {}, width = 14, height = 25){
+function Board(getNextFigure, boardStackedCallback, lineClearedCallback, width = 14, height = 25){
     var board = this;
     this.width = width;
     this.height = height;    
@@ -29,9 +29,16 @@ function Board(getNextFigure = ()=>{}, lineClearedCallback = ()=> {}, width = 14
     var initialPosition = new P(6, 1);
     this.initFigure = function(figure){
         figure.center = initialPosition;
+
+        if (!canPlaceFigure(figure)){
+            //game over
+            boardStackedCallback();
+            return;
+        }            
+
         figure.collisionChecker = collisionChecker;
-        figure.dropCallback = onDrop;        
-        board.figure = figure;        
+        figure.dropCallback = onDrop;                
+        board.figure = figure;                    
     }    
 
     function onDrop(){

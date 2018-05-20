@@ -95,9 +95,10 @@ function Renderer(div, board){
 
     function drawFigure(){
         figureNested.clear();        
-        r.board.figure.figureCellsIteration((cell) => {
-            var rect = figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill({color: "#80aaff"});            
-            return true;
-        });        
+        if (r.board.figure)
+            r.board.figure.figureCellsIteration((cell) => {
+                var rect = figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill({color: "#80aaff"});            
+                return true;
+            });        
     }
 }
