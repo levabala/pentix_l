@@ -17,6 +17,15 @@ function Controller(game){
         controller.slide_interval = value;
     }
 
+    this.next_game = function(){
+        if (!game.isPlaying)
+            game.start();
+    }
+
+    this.restart = function(){
+        game.start();
+    }
+
     this.move_right = function(){
         console.log("action:", "move_right")
         game.board.figure.move(0);
@@ -79,6 +88,6 @@ function Controller(game){
 
     this.exchange = function(){
         console.log("action:", "exchange")
-        //nothing here yet 
+        game.exchangeFigure();
     }
 }

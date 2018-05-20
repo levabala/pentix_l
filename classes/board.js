@@ -1,4 +1,4 @@
-function Board(getNextFigure, boardStackedCallback, lineClearedCallback, width = 14, height = 25){
+function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, width = 14, height = 25){
     var board = this;
     this.width = width;
     this.height = height;    
@@ -28,7 +28,7 @@ function Board(getNextFigure, boardStackedCallback, lineClearedCallback, width =
     }    
 
     //figure managing    
-    var initialPosition = new P(6, 1);
+    var initialPosition = new P(Math.ceil(board.width / 2) - 1, 2);
     this.initFigure = function(figure){
         figure.center = initialPosition;        
         figure.collisionChecker = collisionChecker;
@@ -42,11 +42,26 @@ function Board(getNextFigure, boardStackedCallback, lineClearedCallback, width =
         }                    
     }    
 
+    this.exchangeFigure = function(figure){
+        figure.center = board.figure.center.clone();
+        figure.collisionChecker = collisionChecker;
+        figure.dropCallback = onDrop;
+
+        if (canPlaceFigure(figure)){
+            var f = figure.clone();
+            var f2 = board.figure.clone();
+            board.figure = f;
+            return f2;
+        }
+
+        return figure;
+    }
+
     function onDrop(){
         placeFigure(board.figure);
         checkForFullLine();
 
-        board.initFigure(getNextFigure());
+        figureDropCallback();
     }
 
     function checkForFullLine(){
@@ -90,6 +105,7 @@ function Board(getNextFigure, boardStackedCallback, lineClearedCallback, width =
     function canPlaceFigure(figure){
         var clear = true;        
         figure.figureCellsIteration((cell) => {
+            console.log(cell)
             var res = board.cells[cell.x][cell.y] == 0;            
             clear = res;            
             return res;            

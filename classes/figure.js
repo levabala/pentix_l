@@ -157,6 +157,8 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     }
     
     this.clone = function(){
-        return new Figure(figure.center.clone(), figure.code, collisionChecker, dropCallback, figure.rotation, figure.mirrorState);
+        return new Figure(
+            figure.center.clone(), figure.code, figure.collisionChecker, 
+            figure.dropCallback, figure.rotation, figure.mirrorState);
     }
 }

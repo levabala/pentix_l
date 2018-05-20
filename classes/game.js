@@ -21,7 +21,8 @@ function Game(preset){
         return new Figure(new P(0, 0), game.figureCodes[index], null, null, rotation, mirrorState);
     }    
 
-    this.board = new Board(game.generateRandomFigure, lose, lineCleared); 
+    this.board = new Board(lose, lineCleared, figureDropped); 
+    this.board_next_figure_preview = new Board(() => {}, () => {}, () => {}, 5, 5);
 
     //defaults
     this.fall_interval = 1000; 
@@ -32,20 +33,24 @@ function Game(preset){
     this.lines_done = 0;
     this.lines_need = 20;
 
+    //variables
+    this.reserved_figure = game.generateRandomFigure();    
+
     this.board.initMap();
+    updatePreviewBoard();
     for (var p in preset)
         this[p] = preset[p];
 
     var fallTimeout = null;
     var startTime = 0;        
     this.start = function(){
+        updatePreviewBoard();
         game.isPlaying = true;
-
         game.lines_done = 0;
         game.board.initMap();
         game.board.initFigure(game.generateRandomFigure());
         clearTimeout(fallTimeout);
-        game.continue();                    
+        game.continue();                        
     }
 
     var timeInterval = null;
@@ -60,6 +65,12 @@ function Game(preset){
             return;
         fall(); 
         fallTimeout = setTimeout(fallTick, game.fall_interval);        
+    }
+
+    this.exchangeFigure = function(){
+        var figure = game.board.exchangeFigure(game.reserved_figure);
+        game.reserved_figure = figure;
+        updatePreviewBoard();
     }
 
     this.pause = function(){
@@ -81,6 +92,17 @@ function Game(preset){
         game.lines_done++;
         if (game.lines_done >= game.lines_need)
             win();
+    }
+
+    function figureDropped(){
+        game.board.initFigure(game.reserved_figure.clone());
+        game.reserved_figure = game.generateRandomFigure();    
+        updatePreviewBoard();    
+    }
+
+    function updatePreviewBoard(){                
+        game.board_next_figure_preview.initMap();
+        game.board_next_figure_preview.initFigure(game.reserved_figure);
     }
 
     function win(){

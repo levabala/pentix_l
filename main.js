@@ -27,15 +27,8 @@ var app = new Vue({
     },
     methods: {
         restart: function(){
-            g.start();
+            controller.restart();
         }
-    },
-    mounted() {
-        var t = this;
-        window.addEventListener("keyup", e => {
-            if (e.keyCode == 13 && !g.isPlaying)
-                t.restart();
-        });
     }
 });
 
@@ -56,8 +49,10 @@ statisticMiner.start();
 
 //init renderer (after vue.js - it's important!)
 var renderer = new Renderer(document.getElementById("div_gameboard"), g.board);
+var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), g.board_next_figure_preview);
 
 //start game
 renderer.init();
+renderer_preview.init();
 g.start();
 

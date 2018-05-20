@@ -83,8 +83,8 @@ function Renderer(div, board){
             netNested.add(r.draw.line(0, y, board.width, y).stroke({width: 0.1, opacity: 0.1}));//.attr({"stroke-opacity": 0.1}));
     }
 
-    function drawCells(){
-        cellsNested.clear();
+    function drawCells(){        
+        cellsNested.clear();        
         for (var x = 0; x < board.width; x++)
             for (var y = 0; y < board.height; y++){
                 if (board.cells[x][y] != 1)
