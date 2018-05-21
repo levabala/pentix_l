@@ -3,8 +3,13 @@ body {
 }
 
 .center {
-    margin: auto;
     width: 50%;
-    height: 100%;    
-    padding: 10px;
+    margin: 0 auto;   
+}
+
+.flexable {
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+    display: flex;   
+    flex-wrap: wrap;
 }
