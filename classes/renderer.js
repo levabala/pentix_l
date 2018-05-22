@@ -17,13 +17,17 @@ function Renderer(div, board){
     window.netNested = netNested;    
 
     var scale = 1;        
-
-    this.rescale = function(){        
+    var div_jq = $(div);
+    this.rescale = function(){      
+        var width = div_jq.width();  
+        var height = div_jq.height();
         mainGroup.scale(1 / scale, 1 / scale);
-        scale = Math.round(Math.min(div.offsetWidth * 0.9 / board.width, div.offsetHeight * 0.9 / board.height) * 100) / 100;                
-        r.scaledWidth = div.offsetWidth / scale;
-        r.scaledHeight = div.offsetHeight / scale;
+        scale = Math.round(Math.min(width * 0.99 / board.width, height * 0.99 / board.height) * 100) / 100;                
+        r.scaledWidth = width / scale;
+        r.scaledHeight = height / scale;
         mainGroup.scale(scale, scale);
+
+        
     }
 
     this.init = function(){
@@ -67,7 +71,7 @@ function Renderer(div, board){
     var rescaleInterval = null;
     this.launchRescaleTimer = function(){
         rescaleInterval = setInterval(() => {
-            //r.rescale();
+            r.rescale();
         }, 100);
     }
 

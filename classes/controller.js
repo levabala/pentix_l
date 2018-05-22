@@ -71,9 +71,14 @@ function Controller(game){
         clearInterval(slidingInterval);
     }
 
-    this.rotate = function(){
-        console.log("action:", "rotate")
+    this.rotate_right = function(){
+        console.log("action:", "rotate_right")
         game.board.figure.rotate(1);
+    }
+
+    this.rotate_left = function(){
+        console.log("action:", "rotate_left")
+        game.board.figure.rotate(-1);
     }
 
     this.mirror = function(){
