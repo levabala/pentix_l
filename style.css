@@ -5,6 +5,11 @@ body {
 .center {
     margin: auto;
     width: 50%;
-    height: 100%;    
-    padding: 10px;
+    height: 100%;        
+}
+
+.inline { 
+    display: inline-block; 
+    border: 1px solid black; 
+    margin: 5px;
 }

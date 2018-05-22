@@ -27,7 +27,8 @@ function Renderer(div, board){
         r.scaledHeight = height / scale;
         mainGroup.scale(scale, scale);
 
-        
+        var maxSide = Math.max(width, height);        
+        div_jq.css("width", board.width * height / board.height + "px");        
     }
 
     this.init = function(){

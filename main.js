@@ -43,6 +43,8 @@ var statisticMiner = new StatisticMiner(g, (stats) => {
     var ms = elapsed - seconds * 1000;
     if (ms < 100)
         ms = "0" + ms;
+    if (ms > 999)
+        ms = 999;
     Vue.set(app, "game_duration", `${seconds}s:${ms}ms`);    
 }, 100);
 statisticMiner.start();
