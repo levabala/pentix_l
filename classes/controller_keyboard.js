@@ -21,7 +21,7 @@ function ControllerKeyboard(game, control_triggers = {}){
         drop_left: [],
         drop_right: [],
         rotate_left: [12, 38],
-        rotate_right: [12, 38],
+        rotate_right: [],
         mirror: [35, 65, 81],
         exchange: [50, 83, 87],
         restart: [],
