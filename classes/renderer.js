@@ -18,33 +18,12 @@ function Renderer(div, board){
 
     var scale = 1;        
 
-    //html resize script
-    let div_jq = $(div);
-    let lastHeight = 0;
-    setInterval(() => {
-        let height = div_jq.height();
-        if (height == lastHeight)
-            return;
-
-        lastHeight = height;
-
-        let width = height / r.board.height * r.board.width;
-        div_jq.css("width", width.toString());
-        console.log(width)
-        //r.rescale();    
-    });
-
     this.rescale = function(){        
-        var width = div_jq.width();
-        var height = div_jq.height();        
-        //mainGroup.transform({scale: 1});
-        scale = Math.round(Math.min(width * 0.9 / board.width, height * 0.9 / board.height) * 100) / 100;                
-        r.scaledWidth = width / scale;
-        r.scaledHeight = height / scale;
-        console.log("scale:", scale)
-        mainGroup.transform({scale: scale});
-        r.draw.width(board.width * scale);
-        r.draw.height(board.height * scale);       
+        mainGroup.scale(1 / scale, 1 / scale);
+        scale = Math.round(Math.min(div.offsetWidth * 0.9 / board.width, div.offsetHeight * 0.9 / board.height) * 100) / 100;                
+        r.scaledWidth = div.offsetWidth / scale;
+        r.scaledHeight = div.offsetHeight / scale;
+        mainGroup.scale(scale, scale);
     }
 
     this.init = function(){
@@ -55,10 +34,10 @@ function Renderer(div, board){
         figureNested = scaleNested.nested();
         netNested = scaleNested.nested();
         mainGroup.add(scaleNested);
-        r.rescale();       
-
-        var rect = scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                        
-        scaleNested.center(0, 0);//r.scaledHeight / 2);        
+        r.rescale();                   
+        
+        var rect = scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                
+        //scaleNested.center(r.scaledWidth / 4, 0);//r.scaledHeight / 2);        
         //mainGroup.add(rect)
 
         drawCells();
@@ -88,8 +67,8 @@ function Renderer(div, board){
     var rescaleInterval = null;
     this.launchRescaleTimer = function(){
         rescaleInterval = setInterval(() => {
-            r.rescale();
-        }, 1000);
+            //r.rescale();
+        }, 100);
     }
 
     function redraw(){
