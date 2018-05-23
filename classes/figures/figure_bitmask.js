@@ -1,10 +1,10 @@
-function Figure_Radial(){
+function Figure_Bitmask(){
     Figure.apply(this, arguments);    
 
     //через figure. доступно:
-    //code
-    //rotation
-    //mirrorState
+    //code - array
+    //rotation - int от 0 до 3
+    //mirrorState - int от 0 до 1
 
     //example: figure.code
 

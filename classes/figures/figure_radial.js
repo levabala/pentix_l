@@ -1,8 +1,10 @@
 function Figure_Radial(){
     Figure.apply(this, arguments);    
 
+    console.log("radial")
+
     var figure = this;    
-    this.figureCellsIteration = function(action){
+    this.figureCellsIteration = function(action){        
         var f = figure.clone();
 
         var maxTranspose = 1 + f.layers * 2;

@@ -17,11 +17,12 @@
     <!--internal-->
     <script src="additional/assemblies.js"></script>
     <script src="classes/commands.js"></script>
-    <script src="classes/controller.js"></script>
-    <script src="classes/controller_keyboard.js"></script>
+    <script src="classes/controllers/controller.js"></script>
+    <script src="classes/controllers/controller_keyboard.js"></script>
     <script src="classes/board.js"></script>
-    <script src="classes/figure_radial.js"></script>
-    <script src="classes/figure.js"></script>
+    <script src="classes/figures/figure_radial.js"></script>
+    <script src="classes/figures/figure_bitmask.js"></script>
+    <script src="classes/figures/figure.js"></script>
     <script src="classes/game.js"></script>        
     <script src="classes/renderer.js"></script>        
     <script src="classes/statistic_miner.js"></script>    
@@ -49,7 +50,7 @@
         <div id="center_column" style="position: absolute; right: 150px; left: 150px; bottom: 10px; top: 10px;">
             <div id="div_gameboard" style="height: 100%"></div>                                             
         </div> 
-        <div id="right_column" style="position: absolute; left: 10px top: 10px">
+        <div id="right_column" style="position: absolute; left: 10px; top: 10px">
             <div style="">
                 <div id="div_game_stats">
                         Lines done: {{lines_done}}/{{lines_need}}<br>

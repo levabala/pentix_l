@@ -1,6 +1,6 @@
 function Game(figure_class, preset = {}){
     var game = this;  
-    var Figa = figure_class;
+    var Figa = figure_class;    
     this.figureCodes = [
         [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 1, 0, 0, 0, 1, 1, 1],
@@ -35,6 +35,7 @@ function Game(figure_class, preset = {}){
 
     //variables
     this.reserved_figure = game.generateRandomFigure();    
+    console.log(this.reserved_figure)
 
     this.board.initMap();
     updatePreviewBoard();
