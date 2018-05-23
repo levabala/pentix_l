@@ -1,6 +1,6 @@
-function Game(preset){
+function Game(figure_class, preset = {}){
     var game = this;  
-        
+    var Figa = figure_class;
     this.figureCodes = [
         [1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 1, 0, 0, 0, 1, 1, 1],
@@ -18,7 +18,7 @@ function Game(preset){
         var index = Math.floor(Math.random() * (game.figureCodes.length - 1));
         var rotation = Math.floor(Math.random() * 3);
         var mirrorState = Math.floor(Math.random() * 2);        
-        return new Figure(new P(0, 0), game.figureCodes[index], null, null, rotation, mirrorState);
+        return new Figa(new P(0, 0), game.figureCodes[index], null, null, rotation, mirrorState);
     }    
 
     this.board = new Board(lose, lineCleared, figureDropped); 

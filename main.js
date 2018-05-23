@@ -1,5 +1,5 @@
 //init global classes
-var g = new Game();
+var g = new Game(Figure_Radial);
 var controller = new ControllerKeyboard(g);
 
 //init vue.js model
@@ -8,7 +8,7 @@ var app = new Vue({
     el: '#app',
     data: {
         fall_speed: 1,
-        sliding_start_delay: 50,
+        sliding_start_delay: 120,
         sliding_interval: 30,
         lines_done: 0,
         lines_need: 20,
