@@ -103,12 +103,12 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
     }
 
     function canPlaceFigure(figure){
-        var clear = true;        
+        var clear = true;                
         figure.figureCellsIteration((cell) => {            
             var res = board.cells[cell.x][cell.y] == 0;            
-            clear = res;            
+            clear = res;                     
             return res;            
-        });        
+        });                
         return clear;
     }        
 

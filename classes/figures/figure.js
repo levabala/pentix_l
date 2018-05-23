@@ -21,8 +21,8 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
     this.rotate = function(delta, ignoreCollision = false){
         var newRotation = figure.rotation + delta;
         newRotation = (newRotation + 4 + delta) % 4
-        updateComparingFigure({"rotation": newRotation});
-        if (figure.collisionChecker(comparingFigure) || ignoreCollision){
+        figure.updateComparingFigure({"rotation": newRotation});
+        if (figure.collisionChecker(figure.comparingFigure) || ignoreCollision){
             figure.rotation = newRotation;
             update();
             return true;
@@ -32,8 +32,8 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
 
     this.mirror = function(){
         var newMirrorState = Math.abs(figure.mirrorState - 1);
-        updateComparingFigure({"mirrorState": newMirrorState});
-        if (figure.collisionChecker(comparingFigure)){                        
+        figure.updateComparingFigure({"mirrorState": newMirrorState});
+        if (figure.collisionChecker(figure.comparingFigure)){                        
             figure.mirrorState = newMirrorState;
             update();
             return true;
@@ -52,19 +52,19 @@ function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirr
         3: new P(0, -1)
     }    
 
-    var comparingFigure = null;
-    function updateComparingFigure(postReplace){
-        if (comparingFigure === null)
-            comparingFigure = new Figure(center, figure.code, collisionChecker, figure.rotation, figure.mirrorState);        
-        comparingFigure.replaceFigure(figure);
+    this.comparingFigure = null;
+    this.updateComparingFigure = function(postReplace){
+        if (figure.comparingFigure === null)
+            figure.comparingFigure = new Figure(figure.center, figure.code, figure.collisionChecker, figure.rotation, figure.mirrorState);        
+        figure.comparingFigure.replaceFigure(figure);
         for (var property in postReplace)
-            comparingFigure[property] = postReplace[property];
+            figure.comparingFigure[property] = postReplace[property];
     }
 
     this.move = function(direction){         
         var newCenter = figure.center.clone().add(figure.vectorsMap[direction]);
-        updateComparingFigure({"center": newCenter});
-        if (figure.collisionChecker(comparingFigure)){
+        figure.updateComparingFigure({"center": newCenter});
+        if (figure.collisionChecker(figure.comparingFigure)){
             figure.center = newCenter;
             update();            
             return true;

@@ -35,7 +35,6 @@ function Game(figure_class, preset = {}){
 
     //variables
     this.reserved_figure = game.generateRandomFigure();    
-    console.log(this.reserved_figure)
 
     this.board.initMap();
     updatePreviewBoard();

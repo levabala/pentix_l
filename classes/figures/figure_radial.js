@@ -1,11 +1,9 @@
 function Figure_Radial(){
-    Figure.apply(this, arguments);    
-
-    console.log("radial")
+    Figure.apply(this, arguments);        
 
     var figure = this;    
-    this.figureCellsIteration = function(action){        
-        var f = figure.clone();
+    this.figureCellsIteration = function(action){            
+        var f = figure;//.clone();
 
         var maxTranspose = 1 + f.layers * 2;
         var cell = f.center.clone();
@@ -76,5 +74,21 @@ function Figure_Radial(){
             else if (rotation < 0)
                 rotation = 3;
         }
+    }
+
+    //override cloning to our class
+    this.clone = function(){
+        return new Figure_Radial(
+            figure.center.clone(), figure.code, figure.collisionChecker, 
+            figure.dropCallback, figure.rotation, figure.mirrorState);
+    }
+
+    //and compring figure    
+    this.updateComparingFigure = function(postReplace){
+        if (figure.comparingFigure === null)
+            figure.comparingFigure = new Figure_Radial(figure.center, figure.code, figure.collisionChecker, figure.rotation, figure.mirrorState);        
+        figure.comparingFigure.replaceFigure(figure);
+        for (var property in postReplace)
+            figure.comparingFigure[property] = postReplace[property];
     }
 }
