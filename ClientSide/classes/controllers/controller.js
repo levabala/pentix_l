@@ -27,22 +27,30 @@ function Controller(game){
     }
 
     this.move_right = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "move_right")
         game.board.figure.move(0);
     }
 
     this.move_left = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "move_left")
         game.board.figure.move(2);
     }    
 
     this.move_down = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "move_down")
         game.board.figure.move(1);
     }
     
     var slidingInterval = null;    
     this.slide_left_start = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "slide_left_start")
         clearInterval(slidingInterval);
         slidingInterval = setInterval(() => {
@@ -51,6 +59,8 @@ function Controller(game){
     }    
 
     this.slide_right_start = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "slide_right_start")
         clearInterval(slidingInterval);
         slidingInterval = setInterval(() => {
@@ -59,6 +69,8 @@ function Controller(game){
     }
 
     this.slide_down_start = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "slide_down_start")
         clearInterval(slidingInterval);
         slidingInterval = setInterval(() => {
@@ -67,31 +79,43 @@ function Controller(game){
     }
 
     this.slide_stop = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "slide_stop")
         clearInterval(slidingInterval);
     }
 
     this.rotate_right = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "rotate_right")
-        game.board.figure.rotate(1);
+        game.board.figure.rotate_right();
     }
 
     this.rotate_left = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "rotate_left")
-        game.board.figure.rotate(-1);
+        game.board.figure.rotate_left();
     }
 
     this.mirror = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "mirror")
         game.board.figure.mirror();
     }
 
     this.drop = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "drop")
         game.board.figure.drop();
     }
 
     this.exchange = function(){
+        if (!game.isPlaying)
+            return;
         console.log("action:", "exchange")
         game.exchangeFigure();
     }

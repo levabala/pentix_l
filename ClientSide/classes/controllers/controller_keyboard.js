@@ -1,10 +1,13 @@
-function ControllerKeyboard(game, control_triggers = {}){    
+function ControllerKeyboard(game, preset = {}, control_triggers = {}){    
     Controller.apply(this, arguments);    
     var controller = this;
 
     //defaults
-    this.start_sliding_delay = 50;
+    this.sliding_start_delay = 50;
     this.slide_interval = 30;
+
+    for (let property in preset)
+        this[property] = preset[property];
 
     /*control_triggers example    
     var c_t = {
@@ -20,12 +23,12 @@ function ControllerKeyboard(game, control_triggers = {}){
         drop: [34, 68, 32],
         drop_left: [],
         drop_right: [],
-        rotate_left: [12, 38],
-        rotate_right: [],
+        rotate_left: [],
+        rotate_right: [12, 38],
         mirror: [35, 65, 81],
         exchange: [50, 83, 87],
-        restart: [],
-        next_game: [13],
+        restart: [13],
+        next_game: [],
         slide_left_start: [],
         slide_left_stop: [],
         slide_right_start: [],
@@ -77,7 +80,7 @@ function ControllerKeyboard(game, control_triggers = {}){
 
                 if (action_timeouts.slide_right_start == null)
                 action_timeouts.slide_right_start = 
-                    setTimeout(controller.slide_right_start, controller.start_sliding_delay);                            
+                    setTimeout(controller.slide_right_start, controller.sliding_start_delay);                            
         }
         if (keydown_keys_map.move_left.indexOf(k) != -1){
             clearTimeout(action_timeouts.slide_right_start);
@@ -87,7 +90,7 @@ function ControllerKeyboard(game, control_triggers = {}){
 
             if (action_timeouts.slide_left_start == null)
                 action_timeouts.slide_left_start = 
-                    setTimeout(controller.slide_left_start, controller.start_sliding_delay);                                                    
+                    setTimeout(controller.slide_left_start, controller.sliding_start_delay);                                                    
         }
         if (keydown_keys_map.move_down.indexOf(k) != -1){
             clearTimeout(action_timeouts.slide_right_start);            
@@ -97,7 +100,7 @@ function ControllerKeyboard(game, control_triggers = {}){
 
             if (action_timeouts.slide_down_start == null)
                 action_timeouts.slide_down_start = 
-                    setTimeout(controller.slide_down_start, controller.start_sliding_delay);                                                    
+                    setTimeout(controller.slide_down_start, controller.sliding_start_delay);                                                    
         }
     });
     

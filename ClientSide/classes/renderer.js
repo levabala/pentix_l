@@ -4,17 +4,14 @@ function Renderer(div, board){
     this.board = board;
     this.scaledWidth = 0;
     this.scaledHeight = 0;    
-    this.draw = SVG(div);
+    this.draw = SVG(div);    
     var mainGroup = this.draw.group();   
     var scaleNested = this.draw.nested();
     mainGroup.add(scaleNested);     
 
     var netNested = scaleNested.nested();
     var cellsNested = scaleNested.nested();
-    var figureNested = scaleNested.nested();
-
-    window.scaleNested = scaleNested;
-    window.netNested = netNested;    
+    var figureNested = scaleNested.nested(); 
 
     var scale = 1;        
     var div_jq = $(div);
@@ -32,18 +29,19 @@ function Renderer(div, board){
     }
 
     this.init = function(){
-        r.draw.clear();
+        scale = 1;  
+        //div_jq.css("width", "1px");
+        r.draw.remove();
+        r.draw = SVG(div);        
         mainGroup = this.draw.group();
         scaleNested = this.draw.nested();                        
         cellsNested = scaleNested.nested();
         figureNested = scaleNested.nested();
         netNested = scaleNested.nested();
         mainGroup.add(scaleNested);
-        r.rescale();                   
+        r.rescale();                           
         
-        var rect = scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                
-        //scaleNested.center(r.scaledWidth / 4, 0);//r.scaledHeight / 2);        
-        //mainGroup.add(rect)
+        scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                        
 
         drawCells();
         drawFigure();
@@ -51,12 +49,13 @@ function Renderer(div, board){
 
         r.launchRescaleTimer();
         r.launchRedrawTimer();
-    }
+    }    
 
     var lastBoardTimecode = 0;
     var lastFigureTimecode = 0;
     var redrawInterval = null;
     this.launchRedrawTimer = function(){
+        clearInterval(redrawInterval)
         redrawInterval = setInterval(() => {
             if (board.timecode != lastBoardTimecode){
                 board.timecode = lastBoardTimecode;
@@ -71,6 +70,7 @@ function Renderer(div, board){
 
     var rescaleInterval = null;
     this.launchRescaleTimer = function(){
+        clearInterval(rescaleInterval)
         rescaleInterval = setInterval(() => {
             r.rescale();
         }, 100);
@@ -101,9 +101,7 @@ function Renderer(div, board){
     function drawFigure(){
         figureNested.clear();        
         if (r.board.figure)
-            r.board.figure.figureCellsIteration((cell) => {
-                var rect = figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill({color: "#80aaff"});            
-                return true;
-            });        
+            for (let cell of r.board.figure.cells)
+                figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill({color: "#80aaff"});
     }
 }

@@ -13,7 +13,7 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
             board.cells[x] = [];
             for (var y = -1; y < board.height + 1; y++)
                 board.cells[x][y] = 0;
-        }
+        }        
 
         //fill invisible borders
         for (var y = 0; y < board.height; y++){
@@ -30,9 +30,10 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
     //figure managing    
     var initialPosition = new P(Math.ceil(board.width / 2) - 1, 2);
     this.initFigure = function(figure){
-        figure.center = initialPosition;        
+        figure.center = initialPosition.clone();        
         figure.collisionChecker = collisionChecker;
-        figure.dropCallback = onDrop;                
+        figure.dropCallback = onDrop;  
+        figure.update_cells();              
         board.figure = figure;                  
         
         if (!canPlaceFigure(figure)){
@@ -102,22 +103,17 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
         return canPlaceFigure(figure);
     }
 
-    function canPlaceFigure(figure){
-        var clear = true;                
-        figure.figureCellsIteration((cell) => {            
-            var res = board.cells[cell.x][cell.y] == 0;            
-            clear = res;                     
-            return res;            
-        });                
-        return clear;
+    function canPlaceFigure(figure){                        
+        for (let cell of figure.cells)
+            if (inRange(cell.x, -1, board.width) || inRange(cell.y, -1, board.height) || board.cells[cell.x][cell.y] == 1)
+                return false;    
+        return true;
     }        
 
     function placeFigure(figure){
-        figure.figureCellsIteration((cell) => {
-            board.cells[cell.x][cell.y] = 1;
-            return true;
-        });
-        update();
+        for (let cell of figure.cells)
+            board.cells[cell.x][cell.y] = 1;       
+        update();        
     }   
 
     function update(){

@@ -1,92 +1,112 @@
-function Figure(center, code, collisionChecker, dropCallback, rotation = 0, mirrorState = 0){
-    var figure = this;
-    this.center = center; 
-    this.code = code;
-    this.rotation = rotation;
-    this.mirrorState = mirrorState;
-    this.layers = 1 + ((code.length > 8) ? 1 : 0);
-    this.timecode = Date.now();
-    this.collisionChecker = collisionChecker;
-    this.dropCallback = dropCallback;
-
-    this.replaceFigure = function(figure2){
-        figure.center = figure2.center.clone();
-        figure.code = figure2.code;        
-        figure.rotation = figure2.rotation;        
-        figure.mirrorState = figure2.mirrorState;        
-        figure.layers = figure2.layers;   
-        update();   
-    }    
-
-    this.rotate = function(delta, ignoreCollision = false){
-        var newRotation = figure.rotation
-        console.log(newRotation, delta)
-        newRotation = (newRotation + 3 + delta) % 3
-        console.log(newRotation)
-        figure.updateComparingFigure({"rotation": newRotation});
-        if (figure.collisionChecker(figure.comparingFigure) || ignoreCollision){
-            figure.rotation = newRotation;
-            update();
-            return true;
-        }         
-        return false;
+//ES6
+class Figure{
+    constructor(center, code, collisionChecker, dropCallback){                
+        this.center = center; 
+        this.code = code;                       
+        this.collisionChecker = collisionChecker;
+        this.dropCallback = dropCallback;
+        this.directions = {
+            "RIGHT": 0,
+            "DOWN": 1,
+            "LEFT": 2
+        };
+        this.move_map = {
+            0: this.move_right,
+            1: this.move_down,
+            2: this.move_left
+        };        
+        //code to cells transforming
+        this.update_cells();                     
     }
 
-    this.mirror = function(){
-        var newMirrorState = Math.abs(figure.mirrorState - 1);
-        figure.updateComparingFigure({"mirrorState": newMirrorState});
-        if (figure.collisionChecker(figure.comparingFigure)){                        
-            figure.mirrorState = newMirrorState;
-            update();
-            return true;
+    //we use "reverted" argument to have an ability to revert function action
+    move_left(reverted = -1){
+        this.center.x += -1 * -reverted;
+    } 
+
+    move_right(reverted = -1){
+        this.center.x += 1 * -reverted;
+    }
+
+    move_down(reverted = -1){
+        this.center.y += 1 * -reverted;
+    }    
+
+    //BIND PERFOMANCE IS UNDER QUESTION!
+    move(direction){
+        this.move_map[direction].bind(this)();
+        this.update_cells(); 
+        if (!this.collisionChecker(this)){
+            //if collision event dispatched we revert moving
+            this.move_map[direction].bind(this)(1);
+            this.update_cells();        
+            return false;
         }        
-        return false;
+        return true;
     }
 
-    this.drop = function(){        
-        while(figure.move(1));            
-    }
-
-    this.vectorsMap = {
-        0: new P(1, 0),
-        1: new P(0, 1),
-        2: new P(-1, 0),
-        3: new P(0, -1)
-    }    
-
-    this.comparingFigure = null;
-    this.updateComparingFigure = function(postReplace){
-        if (figure.comparingFigure === null)
-            figure.comparingFigure = new Figure(figure.center, figure.code, figure.collisionChecker, figure.rotation, figure.mirrorState);        
-        figure.comparingFigure.replaceFigure(figure);
-        for (var property in postReplace)
-            figure.comparingFigure[property] = postReplace[property];
-    }
-
-    this.move = function(direction){         
-        var newCenter = figure.center.clone().add(figure.vectorsMap[direction]);
-        figure.updateComparingFigure({"center": newCenter});
-        if (figure.collisionChecker(figure.comparingFigure)){
-            figure.center = newCenter;
-            update();            
-            return true;
+    drop(){
+        while (this.move(this.directions.DOWN)){
+            //while move() returns "true" we call move() again 
         }
-        if (direction == 1)
-            figure.dropCallback();
-        return false;             
+        this.dropCallback();
     }
 
-    this.figureCellsIteration = function(action){
-        
+    rotate_right(){
+        const not_rotated = Matrix.clone(this.code);
+        const rotated = Matrix.rotate(this.code);
+        this.code = rotated;
+        this.update_cells();
+        if (!this.collisionChecker(this)){
+            this.code = not_rotated;         
+            this.update_cells();
+        }
     }
 
-    function update(){
-        figure.timecode = Date.now();
+    rotate_left(){
+        const not_rotated = Matrix.clone(this.code);
+        const rotated = Matrix.rotateCounterClockwise(this.code);
+        this.code = rotated;
+        this.update_cells();
+        if (!this.collisionChecker(this)){
+            this.code = not_rotated;         
+            this.update_cells();
+        }
     }
-    
-    this.clone = function(){
-        return new Figure(
-            figure.center.clone(), figure.code, figure.collisionChecker, 
-            figure.dropCallback, figure.rotation, figure.mirrorState);
+
+    mirror(){
+        const not_flipped = Matrix.clone(this.code);
+        const flipped = Matrix.reverse(this.code);
+        this.code = flipped;
+        this.update_cells();
+        if (!this.collisionChecker(this)){
+            this.code = not_flipped;         
+            this.update_cells();
+        }
+    }
+
+    update_cells(){
+        this.cells = this.create_board_projection();
+        this.update();
+    }
+
+    create_board_projection(){
+        //-2 is because we have 5x5 square and offset by 2
+        let cells = []
+        for (let x in this.code)
+            for (let y in this.code[x])
+                if (this.code[x][y] == 1)
+                    cells.push(new P(parseInt(x) + this.center.x - 2, parseInt(y) + this.center.y - 2));         
+        return cells;
+    }        
+
+    update(){
+        this.timecode = Date.now();
+    }
+
+    clone(){
+        let cloned = new Figure(this.center, this.code, this.collisionChecker, this.dropCallback);        
+        cloned.update_cells();
+        return cloned;
     }
 }

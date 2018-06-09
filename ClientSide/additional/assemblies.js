@@ -1,9 +1,17 @@
-function inRange(num, from, to){
+function toRange(num, from, to){
     if (from >= num)
         return from;
     if (to <= num)
         return to;
     return num;
+}
+
+function inRange(num, from, to){
+    if (from >= num)
+        return true;
+    if (to <= num)
+        return true;
+    return false;
 }
 
 function P(x, y){

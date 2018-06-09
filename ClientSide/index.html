@@ -18,12 +18,11 @@
     <!--internal-->
     <script src="additional/assemblies.js"></script>
     <script src="additional/reactor.js"></script>
+    <script src="additional/matrix.js"></script>
     <script src="classes/commands.js"></script>
     <script src="classes/controllers/controller.js"></script>
     <script src="classes/controllers/controller_keyboard.js"></script>
-    <script src="classes/board.js"></script>
-    <script src="classes/figures/figure_radial.js"></script>
-    <script src="classes/figures/figure_bitmask.js"></script>
+    <script src="classes/board.js"></script>    
     <script src="classes/figures/figure.js"></script>
     <script src="classes/game.js"></script>        
     <script src="classes/renderer.js"></script>        
@@ -36,18 +35,26 @@
     <div id="app" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
         <div id="left_column" style="position: absolute; left: 10px; top: 10px">            
             <div id="div_controls" style="float: right">
+                    Glass width:<br>
+                    {{ board_width }} cells<br>
+                    <input type="range" min="12" max="25" v-model="board_width" v-on:mouseup="updateBoardSize" class="slider">
+                    <br>
+                    Sliding interval:<br>
+                    {{ board_height }} cells<br>
+                    <input type="range" min="15" max="30" v-model="board_height" v-on:mouseup="updateBoardSize" class="slider">
+                    <br>
                     Fall speed:<br>
                     {{ fall_speed }} cells/second<br>
-                    <input type="range" min="1" max="20" v-model="fall_speed" class="slider" id="myRange">
+                    <input type="range" min="1" max="20" v-model="fall_speed" class="slider">
                     <br>  
                     Start sliding delay:<br>
                     {{ sliding_start_delay }} milliseconds<br>
-                    <input type="range" min="1" max="250" v-model="sliding_start_delay" class="slider" id="myRange">
+                    <input type="range" min="1" max="350" v-model="sliding_start_delay" class="slider">
                     <br>
                     Sliding interval:<br>
                     {{ sliding_interval }} milliseconds<br>
-                    <input type="range" min="1" max="100" v-model="sliding_interval" class="slider" id="myRange">
-                    <br>  
+                    <input type="range" min="1" max="100" v-model="sliding_interval" class="slider">
+                    <br>                      
             </div> 
         </div>   
         <div id="center_column" style="position: absolute; right: 150px; left: 150px; bottom: 10px; top: 10px;">
