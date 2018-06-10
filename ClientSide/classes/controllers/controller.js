@@ -1,5 +1,8 @@
-function Controller(game){
+function Controller(game, renderers){
     var controller = this;
+
+    //variables
+    this.renderers = renderers;
 
     //defaults    
     this.start_sliding_delay = 100;
@@ -22,8 +25,11 @@ function Controller(game){
             game.start();
     }
 
-    this.restart = function(){
+    this.restart = function(){        
         game.start();
+        for (var renderer of controller.renderers)
+            renderer.init();                            
+        console.log('restart')
     }
 
     this.move_right = function(){

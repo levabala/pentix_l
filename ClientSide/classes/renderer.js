@@ -15,7 +15,7 @@ function Renderer(div, board){
 
     var scale = 1;        
     var div_jq = $(div);
-    this.rescale = function(){      
+    this.rescale = function(){          
         var width = div_jq.width();  
         var height = div_jq.height();
         mainGroup.scale(1 / scale, 1 / scale);
@@ -30,7 +30,7 @@ function Renderer(div, board){
 
     this.init = function(){
         scale = 1;  
-        //div_jq.css("width", "1px");
+        //div_jq.css("width", "");
         r.draw.remove();
         r.draw = SVG(div);        
         mainGroup = this.draw.group();
@@ -39,7 +39,11 @@ function Renderer(div, board){
         figureNested = scaleNested.nested();
         netNested = scaleNested.nested();
         mainGroup.add(scaleNested);
+
+        //triple rescale to normalize containing div 
         r.rescale();                           
+        r.rescale();
+        r.rescale();                                 
         
         scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                        
 
@@ -47,9 +51,15 @@ function Renderer(div, board){
         drawFigure();
         drawNet();                
 
-        r.launchRescaleTimer();
+        //r.launchRescaleTimer();
         r.launchRedrawTimer();
     }    
+
+    this.updateNet = function(){
+        scaleNested.remove(netNested);
+        netNested = scaleNested.nested();
+        drawNet();
+    }
 
     var lastBoardTimecode = 0;
     var lastFigureTimecode = 0;

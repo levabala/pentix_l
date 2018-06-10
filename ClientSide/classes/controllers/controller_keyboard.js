@@ -1,4 +1,4 @@
-function ControllerKeyboard(game, preset = {}, control_triggers = {}){    
+function ControllerKeyboard(game, renderer, preset = {}, control_triggers = {}){    
     Controller.apply(this, arguments);    
     var controller = this;
 

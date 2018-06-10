@@ -46,8 +46,7 @@ function Game(preset = {}){
     var fallTimeout = null;
     var startTime = 0;        
     this.start = function(){
-        game.board.width = game.board_width;
-        game.board.height = game.board_height;
+        game.board.setSize(game.board_width, game.board_height);
         updatePreviewBoard();
         game.isPlaying = true;
         game.lines_done = 0;

@@ -1,7 +1,5 @@
 function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, width = 14, height = 25){
-    var board = this;
-    this.width = width;
-    this.height = height;    
+    var board = this;        
     this.cells = [];
     this.figure = null;    
     this.timecode = Date.now();    
@@ -27,8 +25,15 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
         update();
     }    
 
-    //figure managing    
-    var initialPosition = new P(Math.ceil(board.width / 2) - 1, 2);
+    var initialPosition;
+    this.setSize = function(width, height){
+        board.width = width;
+        board.height = height;
+        initialPosition = new P(Math.ceil(board.width / 2) - 1, 2);        
+    }
+    this.setSize(width, height);
+
+    //figure managing        
     this.initFigure = function(figure){
         figure.center = initialPosition.clone();        
         figure.collisionChecker = collisionChecker;

@@ -13,6 +13,7 @@
     <script src="libs/svg.min.js"></script>
     <script src="libs/jquery.min.js"></script>
     <script src="libs/socket.io.js"></script>
+    <script src="libs/cookies.js"></script>
     <!--end libs-->
 
     <!--internal-->
@@ -39,9 +40,13 @@
                     {{ board_width }} cells<br>
                     <input type="range" min="12" max="25" v-model="board_width" v-on:mouseup="updateBoardSize" class="slider">
                     <br>
-                    Sliding interval:<br>
+                    Glass height:<br>
                     {{ board_height }} cells<br>
                     <input type="range" min="15" max="30" v-model="board_height" v-on:mouseup="updateBoardSize" class="slider">
+                    <br>
+                    Lines to win:<br>
+                    {{ lines_need }} lines<br>
+                    <input type="range" min="5" max="40" v-model="lines_need" class="slider">
                     <br>
                     Fall speed:<br>
                     {{ fall_speed }} cells/second<br>
