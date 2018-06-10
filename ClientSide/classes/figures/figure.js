@@ -57,7 +57,7 @@ class Figure{
         const rotated = Matrix.rotate(this.code);
         this.code = rotated;
         this.update_cells();
-        if (!this.collisionChecker(this)){
+        if (!this.collisionChecker(this) && !this.try_alternative_positon()){
             this.code = not_rotated;         
             this.update_cells();
         }
@@ -68,7 +68,7 @@ class Figure{
         const rotated = Matrix.rotateCounterClockwise(this.code);
         this.code = rotated;
         this.update_cells();
-        if (!this.collisionChecker(this)){
+        if (!this.collisionChecker(this) && !this.try_alternative_positon()){
             this.code = not_rotated;         
             this.update_cells();
         }
@@ -79,10 +79,27 @@ class Figure{
         const flipped = Matrix.reverse(this.code);
         this.code = flipped;
         this.update_cells();
-        if (!this.collisionChecker(this)){
+        if (!this.collisionChecker(this) && !this.try_alternative_positon()){
             this.code = not_flipped;         
             this.update_cells();
         }
+    }
+
+    try_alternative_positon(max_delta = 5){
+        let basePosition = this.center.clone();
+        for (let d = 0; d < max_delta; d++){
+            this.center.move(d, 0);
+            this.update_cells();
+            if (this.collisionChecker(this))
+                return true;
+            this.center.move(-2 * d, 0);
+            this.update_cells();
+            if (this.collisionChecker(this))
+                return true;            
+            this.center.move(d, 0);
+        }
+        this.center = basePosition;
+        return false;
     }
 
     update_cells(){

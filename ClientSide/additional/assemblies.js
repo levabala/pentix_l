@@ -25,6 +25,12 @@ function P(x, y){
         return p;
     }
 
+    this.move = function(dx, dy){
+        p.x += dx;
+        p.y += dy;
+        return p;
+    }
+
     this.clone = function(){
         return new P(p.x, p.y);
     }
