@@ -14,6 +14,7 @@
     <script src="libs/jquery.min.js"></script>
     <script src="libs/socket.io.js"></script>
     <script src="libs/cookies.js"></script>
+    <script src="libs/color-picker.js"></script>
     <!--end libs-->
 
     <!--internal-->
@@ -35,7 +36,14 @@
   <body>
     <div id="app" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
         <div id="left_column" style="position: absolute; left: 10px; top: 10px">            
-            <div id="div_controls" style="float: right">
+            <div id="div_controls" style="float: right; width: 135px">
+                <!--<md-button class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=!showDropDown;colorChoosing='net_background'">
+                    Choose color
+                </md-button>
+                <div v-if="showDropDown" style="position: absolute; background: white; z-index:10; border-radius: 3%">
+                        <md-color-picker color-margin="6" colors-per-row="5" color-size="54" default-tint="500" fixedMinHeight="true" palette="material-full" use-spectrum-picker="true" value="#eeff41"><md-color-picker>
+                </div>-->
+                <div v-if="!showDropDown">
                     Glass width:<br>
                     {{ board_width }} cells<br>
                     <input type="range" min="12" max="25" v-model="board_width" v-on:mouseup="updateBoardSize" class="slider">
@@ -67,7 +75,8 @@
                     Sliding interval:<br>
                     {{ sliding_interval }} milliseconds<br>
                     <input type="range" min="1" max="100" v-model="sliding_interval" class="slider">
-                    <br>                      
+                    <br> 
+                </div>                     
             </div> 
         </div>   
         <div id="center_column" style="position: absolute; right: 150px; left: 150px; bottom: 10px; top: 10px;">

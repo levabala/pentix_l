@@ -1,10 +1,25 @@
-function Renderer(div, board){
+function Renderer(div, board, preset = {}){
     var r = this;
     this.div = div;
     this.board = board;
     this.scaledWidth = 0;
-    this.scaledHeight = 0;    
-    this.draw = SVG(div);    
+    this.scaledHeight = 0;   
+    this.colors = {
+        net_background: "lightgray",
+        net_lines: "black",
+        filled_cells: "lightblue",
+        figure_cells: "#80aaff",
+    };
+    this.opacity = {
+        net_background: 0.3,
+        net_lines: 0.1,
+        filled_cells: 1,
+        figure_cells: 1,
+    };
+    for (let property in preset)
+        for (let property2 in preset[property])
+            this[property][property2] = preset[property][property2];
+    this.draw = SVG(div);        
     var mainGroup = this.draw.group();   
     var scaleNested = this.draw.nested();
     mainGroup.add(scaleNested);     
@@ -45,7 +60,13 @@ function Renderer(div, board){
         r.rescale();
         r.rescale();                                 
         
-        scaleNested.rect(board.width, board.height).attr({stroke: "none", "stroke-width": 0.1, fill: "lightgray", "fill-opacity": 0.3});                        
+        scaleNested.rect(board.width, board.height).attr(
+                {
+                    stroke: "none", 
+                    "stroke-width": 0.1, 
+                    fill: renderer.colors.net_background, 
+                    "fill-opacity": renderer.opacity.net_background}
+            );                        
 
         drawCells();
         drawFigure();
@@ -59,6 +80,15 @@ function Renderer(div, board){
         scaleNested.remove(netNested);
         netNested = scaleNested.nested();
         drawNet();
+    }
+
+    this.setStyle = function(colors = {}, opacities = {}){
+        for (let property in colors)
+            renderer.colors[property] = colors[property];
+        for (let property in opacities)
+            renderer.opacities[property] = opacities[property];
+        
+        renderer.init();
     }
 
     var lastBoardTimecode = 0;
@@ -93,9 +123,15 @@ function Renderer(div, board){
     function drawNet(){     
         netNested.clear();   
         for (var x = 0; x <= board.width; x++)
-            netNested.add(r.draw.line(x, 0, x, board.height).stroke({width: 0.1, opacity: 0.1}));//.attr({"stroke-opacity": 0.1}));
+            netNested.add(r.draw.line(x, 0, x, board.height).stroke(
+                {
+                    width: 0.1, opacity: renderer.opacity.net_lines, color: renderer.colors.net_lines
+                }));
         for (var y = 0; y <= board.height; y++)
-            netNested.add(r.draw.line(0, y, board.width, y).stroke({width: 0.1, opacity: 0.1}));//.attr({"stroke-opacity": 0.1}));
+            netNested.add(r.draw.line(0, y, board.width, y).stroke(
+                {
+                    width: 0.1, opacity: renderer.opacity.net_lines, color: renderer.colors.net_lines
+                }));
     }
 
     function drawCells(){        
@@ -104,7 +140,9 @@ function Renderer(div, board){
             for (var y = 0; y < board.height; y++){
                 if (board.cells[x][y] != 1)
                     continue;
-                var rect = cellsNested.rect(1, 1).center(x + 0.5, y + 0.5).fill({color: "lightblue"});
+                var rect = cellsNested.rect(1, 1).center(x + 0.5, y + 0.5).fill(
+                    {color: renderer.colors.filled_cells}
+                );
             }
     }
 
@@ -112,6 +150,8 @@ function Renderer(div, board){
         figureNested.clear();        
         if (r.board.figure)
             for (let cell of r.board.figure.cells)
-                figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill({color: "#80aaff"});
+                figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill(
+                    {color: renderer.colors.figure_cells}
+                );
     }
 }

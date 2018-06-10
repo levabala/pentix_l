@@ -10,7 +10,21 @@ var game_preset = {
     filled_lines: 7,
     fill_chance: 0.7
 };
-var presets = {controller_preset: controller_preset, game_preset: game_preset};
+var renderer_preset = {
+    colors: {
+        net_background: "lightgray",
+        net_lines: "black",
+        filled_cells: "lightblue",
+        figure_cells: "#80aaff",
+    },
+    opacity: {
+        net_background: 0.3,
+        net_lines: 0.1,
+        filled_cells: 1,
+        figure_cells: 1,
+    }
+}
+var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
 
 //cookie restore
 var cookie_presets = Cookies.getJSON("presets");
@@ -36,6 +50,10 @@ setTimeout(() => {
                 lines_need: game.lines_need,
                 filled_lines: game.filled_lines,
                 fill_chance: game.fill_chance
+            },
+            renderer_preset: {
+                colors: renderer.colors,
+                opacity: renderer.opacity
             }
         };
         Cookies.set("presets", presets);               
@@ -51,6 +69,8 @@ Vue.use(VueMaterial.default);
 var app = new Vue({
     el: '#app',
     data: {
+        colorChoosing: "",
+        showDropDown: false,
         fall_speed: 1,
         sliding_start_delay: controller_preset.sliding_start_delay,
         sliding_interval: controller_preset.sliding_interval,
@@ -83,6 +103,10 @@ var app = new Vue({
         }
     },
     methods: {
+        changeColor: function(event){
+            console.log(event)
+            renderer_preset.colors[this.colorChoosing] = event.detail[0];
+        },
         restart: function(){
             controller.restart();            
         },
@@ -127,8 +151,8 @@ var statisticMiner = new StatisticMiner(game, (stats) => {
 statisticMiner.start();
 
 //init renderer (after vue.js - it's important!)
-var renderer = new Renderer(document.getElementById("div_gameboard"), game.board);
-var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), game.board_next_figure_preview);
+var renderer = new Renderer(document.getElementById("div_gameboard"), game.board, renderer_preset);
+var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), game.board_next_figure_preview, renderer_preset);
 
 //connect renderers to controller
 controller.renderers = [renderer, renderer_preview];
