@@ -71,7 +71,7 @@ function Game(preset = {}){
     }
 
     this.exchangeFigure = function(){
-        var figure = game.board.exchangeFigure(game.reserved_figure);
+        var figure = game.board.exchangeFigure(game.reserved_figure);        
         game.reserved_figure = figure;
         updatePreviewBoard();
     }

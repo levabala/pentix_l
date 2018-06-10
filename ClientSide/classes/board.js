@@ -37,7 +37,8 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
     this.initFigure = function(figure){
         figure.center = initialPosition.clone();        
         figure.collisionChecker = collisionChecker;
-        figure.dropCallback = onDrop;  
+        figure.dropCallback = onDrop; 
+        figure.try_alternative_positons(); 
         figure.update_cells();              
         board.figure = figure;                  
         
@@ -52,6 +53,7 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
         figure.center = board.figure.center.clone();
         figure.collisionChecker = collisionChecker;
         figure.dropCallback = onDrop;
+        figure.try_alternative_positons();
 
         if (canPlaceFigure(figure)){
             var f = figure.clone();
