@@ -52,6 +52,20 @@ class Figure{
         this.dropCallback();
     }
 
+    drop_down_left(){
+        while (this.move(this.directions.DOWN)){}
+        while (this.move(this.directions.LEFT)){}
+        while (this.move(this.directions.DOWN)){}
+        this.dropCallback();
+    }
+
+    drop_down_right(){
+        while (this.move(this.directions.DOWN)){}
+        while (this.move(this.directions.RIGHT)){}
+        while (this.move(this.directions.DOWN)){}
+        this.dropCallback();
+    }
+
     rotate_right(){
         const not_rotated = Matrix.clone(this.code);
         const rotated = Matrix.rotate(this.code);

@@ -119,6 +119,20 @@ function Controller(game, renderers){
         game.board.figure.drop();
     }
 
+    this.drop_down_left = function(){
+        if (!game.isPlaying)
+            return;
+        console.log("action:", "drop_down_left")
+        game.board.figure.drop_down_left();
+    }
+
+    this.drop_down_right = function(){
+        if (!game.isPlaying)
+            return;
+        console.log("action:", "drop_down_right")
+        game.board.figure.drop_down_right();
+    }
+
     this.exchange = function(){
         if (!game.isPlaying)
             return;
