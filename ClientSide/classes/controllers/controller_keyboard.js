@@ -53,10 +53,9 @@ function ControllerKeyboard(game, renderer, preset = {}, control_triggers = {}){
     fillRevertMaps();
     
     console.log(keydown_keys_map_revert)
-
+    
     window.addEventListener("keydown", (e) => {
-        var k = e.keyCode;
-        console.log(k)
+        var k = e.keyCode;        
         if (!(k in keydown_keys_map_revert))
             return;
 
@@ -68,7 +67,7 @@ function ControllerKeyboard(game, renderer, preset = {}, control_triggers = {}){
 
         keys_down[k] = true;
 
-        console.log(keydown_keys_map_revert[k])
+        //console.log(keydown_keys_map_revert[k])
         controller[keydown_keys_map_revert[k]]();
 
         //sliding timeouts 

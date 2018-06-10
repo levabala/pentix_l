@@ -1,4 +1,4 @@
-function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, width = 14, height = 25){
+function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, width = 14, height = 25, filled_height = 7){
     var board = this;        
     this.cells = [];
     this.figure = null;    
@@ -22,10 +22,15 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
         for (var x = 0; x < board.width; x++)
             board.cells[x][board.height] = 1;
 
-        update();
+        random_fill(filled_height)
     }    
 
     var initialPosition;
+    this.setFilledHeight = function(height){
+        board.filled_height = height;
+        board.initMap();
+    }
+    this.setFilledHeight(filled_height);
     this.setSize = function(width, height){
         board.width = width;
         board.height = height;
@@ -63,6 +68,14 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
         }
 
         return figure;
+    }
+
+    function random_fill(lines = 3, fill_chance = 0.5){
+        for (var x = 0; x < board.width; x++)
+            for (var y = board.height - 1; y > board.height - lines - 1; y--)
+                if (Math.random() <= fill_chance)
+                    board.cells[x][y] = 1;
+        update();
     }
 
     function onDrop(){

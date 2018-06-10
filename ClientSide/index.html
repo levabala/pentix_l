@@ -44,6 +44,10 @@
                     {{ board_height }} cells<br>
                     <input type="range" min="15" max="30" v-model="board_height" v-on:mouseup="updateBoardSize" class="slider">
                     <br>
+                    <!--Glass filled height:<br>
+                    {{ filled_lines }} cells<br>
+                    <input type="range" min="0" max="30" v-model="filled_lines" v-on:mouseup="updateBoardSize" class="slider">
+                    <br>-->
                     Lines to win:<br>
                     {{ lines_need }} lines<br>
                     <input type="range" min="5" max="40" v-model="lines_need" class="slider">
