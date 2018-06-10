@@ -16,7 +16,7 @@ function Game(preset = {}){
     ];    
     this.figureCodes = this.figureCodes.map(figa => Matrix.rotate(Matrix.reverse(figa)));
     this.generateRandomFigure = function(){
-        var index = Math.floor(Math.random() * (game.figureCodes.length - 1));        
+        var index = Math.floor(Math.random() * (game.figureCodes.length));        
         return new Figure(new P(0, 0), game.figureCodes[index]);
     };
     //defaults
