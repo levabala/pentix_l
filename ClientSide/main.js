@@ -6,7 +6,9 @@ var controller_preset = {
 var game_preset = {
     board_width: 14,
     board_height: 25,
-    lines_need: 20
+    lines_need: 20,
+    filled_lines: 7,
+    fill_chance: 0.7
 };
 var presets = {controller_preset: controller_preset, game_preset: game_preset};
 
@@ -31,7 +33,9 @@ setTimeout(() => {
             game_preset: {
                 board_width: game.board_width,
                 board_height: game.board_height,
-                lines_need: game.lines_need
+                lines_need: game.lines_need,
+                filled_lines: game.filled_lines,
+                fill_chance: game.fill_chance
             }
         };
         Cookies.set("presets", presets);               
@@ -54,9 +58,17 @@ var app = new Vue({
         lines_need: game_preset.lines_need,
         board_width: game_preset.board_width,
         board_height: game_preset.board_height,
+        filled_lines: game_preset.filled_lines,
+        fill_chance: game_preset.fill_chance,
         game_duration: "0m:0s:0ms"
     },
     watch: {
+        filled_lines: function(value, oldValue){
+            game.filled_lines = value;
+        },
+        fill_chance: function(value, oldValue){
+            game.fill_chance = value;
+        },
         lines_need: function(value, oldValue){
             game.lines_need = value;
         },

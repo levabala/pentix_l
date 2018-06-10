@@ -24,11 +24,13 @@ function Game(preset = {}){
     this.board_height = 25;
     this.fall_interval = 1000; 
     this.lines_need = 20;
+    this.filled_lines = 5;
+    this.fill_chance = 0.7;
     for (let property in preset)
         this[property] = preset[property];
 
-    this.board = new Board(lose, lineCleared, figureDropped, this.board_width, this.board_height); 
-    this.board_next_figure_preview = new Board(() => {}, () => {}, () => {}, 5, 5);    
+    this.board = new Board(lose, lineCleared, figureDropped, this.board_width, this.board_height, this.filled_lines, this.fill_chance); 
+    this.board_next_figure_preview = new Board(() => {}, () => {}, () => {}, 5, 5, 0);    
     
     //stats
     this.isPlaying = false;
@@ -46,7 +48,10 @@ function Game(preset = {}){
     var fallTimeout = null;
     var startTime = 0;        
     this.start = function(){
+        console.log(game.board)
         game.board.setSize(game.board_width, game.board_height);
+        game.board.setFilledHeight(game.filled_lines);
+        game.board.setFillChance(game.fill_chance);
         updatePreviewBoard();
         game.isPlaying = true;
         game.lines_done = 0;
