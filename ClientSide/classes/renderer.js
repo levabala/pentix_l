@@ -4,21 +4,27 @@ function Renderer(div, board, preset = {}){
     this.board = board;
     this.scaledWidth = 0;
     this.scaledHeight = 0;   
+    this.sub_net_step = 5;
+    this.horizontal_sub_net = false;
     this.colors = {
         glass: "lightgray",
         net: "black",
         fill: "lightblue",
         figure: "#80aaff",
     };
-    this.opacity = {
+    this.opacities = {
         glass: 0.7,
         net: 0.2,
+        sub_net: 0.2,
         fill: 1,
         figure: 1,
     };
     for (let property in preset)
-        for (let property2 in preset[property])
-            this[property][property2] = preset[property][property2];
+        if (typeof preset[property] === "object")
+            for (let property2 in preset[property])
+                this[property][property2] = preset[property][property2];
+        else
+            this[property] = preset[property];
     this.draw = SVG(div);        
     var mainGroup = this.draw.group();   
     var scaleNested = this.draw.nested();
@@ -65,7 +71,7 @@ function Renderer(div, board, preset = {}){
                     stroke: "none", 
                     "stroke-width": 0.1, 
                     fill: renderer.colors.glass, 
-                    "fill-opacity": renderer.opacity.glass}
+                    "fill-opacity": renderer.opacities.glass}
             );                        
 
         drawCells();
@@ -76,11 +82,7 @@ function Renderer(div, board, preset = {}){
         r.launchRedrawTimer();
     }    
 
-    this.updateNet = function(){
-        scaleNested.remove(netNested);
-        netNested = scaleNested.nested();
-        drawNet();
-    }
+    this.reset = this.init; // :)
 
     this.setStyle = function(colors = {}, opacities = {}){
         for (let property in colors)
@@ -122,16 +124,30 @@ function Renderer(div, board, preset = {}){
 
     function drawNet(){     
         netNested.clear();   
+        //main net
         for (var x = 0; x <= board.width; x++)
             netNested.add(r.draw.line(x, 0, x, board.height).stroke(
                 {
-                    width: 0.1, opacity: renderer.opacity.net, color: renderer.colors.net
+                    width: 0.1, opacity: renderer.opacities.net, color: renderer.colors.net
                 }));
         for (var y = 0; y <= board.height; y++)
             netNested.add(r.draw.line(0, y, board.width, y).stroke(
                 {
-                    width: 0.1, opacity: renderer.opacity.net, color: renderer.colors.net
+                    width: 0.1, opacity: renderer.opacities.net, color: renderer.colors.net
                 }));
+        //sub net
+        if (renderer.sub_net_step < board.width)
+            for (var x = 0; x <= board.width; x+=renderer.sub_net_step)
+                netNested.add(r.draw.line(x, 0, x, board.height).stroke(
+                    {
+                        width: 0.1, opacity: renderer.opacities.sub_net, color: renderer.colors.sub_net
+                    }));
+        if (renderer.horizontal_sub_net && renderer.sub_net_step < board.height)
+            for (var y = 0; y <= board.height; y+=renderer.sub_net_step)
+                netNested.add(r.draw.line(0, y, board.width, y).stroke(
+                    {
+                        width: 0.1, opacity: renderer.opacities.sub_net, color: renderer.colors.sub_net
+                    }));
     }
 
     function drawCells(){        
@@ -141,7 +157,7 @@ function Renderer(div, board, preset = {}){
                 if (board.cells[x][y] != 1)
                     continue;
                 var rect = cellsNested.rect(1, 1).center(x + 0.5, y + 0.5).fill(
-                    {color: renderer.colors.fill}
+                    {color: renderer.colors.fill, "opacity": renderer.opacities.fill}
                 );
             }
     }
@@ -151,7 +167,7 @@ function Renderer(div, board, preset = {}){
         if (r.board.figure)
             for (let cell of r.board.figure.cells)
                 figureNested.rect(1, 1).center(cell.x + 0.5, cell.y + 0.5).fill(
-                    {color: renderer.colors.figure}
+                    {color: renderer.colors.figure, "opacity": renderer.opacities.figure}
                 );
     }
 }

@@ -82,6 +82,12 @@
                     Sliding interval:<br>
                     {{ sliding_interval }} milliseconds<br>
                     <input type="range" min="1" max="100" v-model="sliding_interval" class="slider">
+                    <br>
+                    Sub-net step:<br>
+                    {{ sub_net_step }} cells<br>
+                    <input type="range" min=1 max=10 v-model="sub_net_step" v-on:mouseup="updateSubNet" class="slider">
+                    <br>
+                    <md-switch v-model="horizontal_sub_net">Horizontal Sub-Net</md-switch>
                     <br> 
                 </div>                     
             </div> 
@@ -94,9 +100,9 @@
                 <div id="div_game_stats">
                         Lines done: {{lines_done}}/{{lines_need}}<br>
                         Game duration: {{game_duration}}<br>
-                        <md-button class="md-raised md-accent" v-on:click="restart">Restart</md-button>
+                        <md-button class="md-raised md-accent" style="margin-left: 0px" v-on:click="restart">Restart</md-button>
                 </div><br>
-                <div id="div_figure_preview"></div>                       
+                <div id="div_figure_preview" style="width: 10px; height: 100px"></div>                       
                 <br>
                 <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass'">
                     Glass color
@@ -112,7 +118,23 @@
                 <br>
                 <md-button v-on:click.stop="" v-bind:style="{ background: colors.fill, color: alt_colors.fill}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='fill'">
                     Fill color
-                </md-button>                
+                </md-button><br>
+                Glass opacity:<br>
+                {{ Math.floor(opacities.glass * 100) }}%<br>
+                <input type="range" min=0 max=1 step=0.1 v-model="opacities.glass" v-on:mouseup="updateOpacities" class="slider">
+                <br>              
+                Net opacity:<br>
+                {{ Math.floor(opacities.net * 100) }}%<br>
+                <input type="range" min=0 max=1 step=0.1 v-model="opacities.net" v-on:mouseup="updateOpacities" class="slider">
+                <br>
+                Figure opacity:<br>
+                {{ Math.floor(opacities.figure * 100)}}%<br>
+                <input type="range" min=0 max=1 step=0.1 v-model="opacities.figure" v-on:mouseup="updateOpacities" class="slider">
+                <br>
+                Filled opacity:<br>
+                {{ Math.floor(opacities.fill * 100) }}%<br>
+                <input type="range" min=0 max=1 step=0.1 v-model="opacities.fill" v-on:mouseup="updateOpacities" class="slider">
+                <br>
             </div>
         </div>
     </div>

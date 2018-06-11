@@ -47,8 +47,8 @@ function Game(preset = {}){
 
     var fallTimeout = null;
     var startTime = 0;        
-    this.start = function(){
-        console.log(game.board)
+    this.start = function(){        
+        game.reserved_figure = game.generateRandomFigure(); 
         game.board.setSize(game.board_width, game.board_height);
         game.board.setFilledHeight(game.filled_lines);
         game.board.setFillChance(game.fill_chance);

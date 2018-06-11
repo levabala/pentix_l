@@ -17,18 +17,20 @@ var renderer_preset = {
         fill: "lightblue",
         figure: "#80aaff",
     },
-    opacity: {
+    opacities: {
         glass: 0.3,
         net: 0.1,
         fill: 1,
         figure: 1,
-    }
-}
+    },
+    sub_net_step: 5,
+    horizontal_sub_net: false
+};
 var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
 
 //cookie restore
 var cookie_presets = Cookies.getJSON("presets");
-if (typeof cookie_presets === "undefined")
+if (Object.keys(cookie_presets).length == 0)
     Cookies.set("presets", {});     
 else{
     controller_preset = cookie_presets.controller_preset;
@@ -36,30 +38,32 @@ else{
     renderer_preset = cookie_presets.renderer_preset;
 }
 
-//cookie save interval
-setTimeout(() => {
-    setInterval(() => {        
-        var presets = {
-            controller_preset: {
-                sliding_start_delay: controller.sliding_start_delay,
-                sliding_interval: controller.sliding_interval,
-                fall_speed: controller.fall_speed
-            },
-            game_preset: {
-                board_width: game.board_width,
-                board_height: game.board_height,
-                lines_need: game.lines_need,
-                filled_lines: game.filled_lines,
-                fill_chance: game.fill_chance
-            },
-            renderer_preset: {
-                colors: renderer.colors,
-                opacity: renderer.opacity
-            }
-        };
-        Cookies.set("presets", presets);               
-    }, 1999);
-}, 0);//2000);
+//cookies save interval
+setTimeout(() => setInterval(saveCookies, 1999), 0);
+function saveCookies(){
+    var presets = {
+        controller_preset: {
+            sliding_start_delay: controller.sliding_start_delay,
+            sliding_interval: controller.sliding_interval,
+            fall_speed: controller.fall_speed
+        },
+        game_preset: {
+            board_width: game.board_width,
+            board_height: game.board_height,
+            lines_need: game.lines_need,
+            filled_lines: game.filled_lines,
+            fill_chance: game.fill_chance
+        },
+        renderer_preset: {
+            colors: renderer.colors,
+            opacities: renderer.opacities,
+            sub_net_step: renderer.sub_net_step,
+            horizontal_sub_net: renderer.horizontal_sub_net
+        }
+    };
+    Cookies.set("presets", presets);               
+}
+
 
 //init global classes
 var game = new Game(game_preset);
@@ -71,12 +75,14 @@ var app = new Vue({
     el: '#app',
     data: {
         colors: renderer_preset.colors,
+        opacities: renderer_preset.opacities,
+        sub_net_step: renderer_preset.sub_net_step,
         alt_colors: {
             glass: generateAlternativeColor(renderer_preset.colors.glass),        
             net: generateAlternativeColor(renderer_preset.colors.net),
             figure: generateAlternativeColor(renderer_preset.colors.figure),
             fill: generateAlternativeColor(renderer_preset.colors.fill),
-        },
+        },        
         colorChoosing: "",
         showDropDown: false,
         fall_speed: 1,
@@ -88,7 +94,8 @@ var app = new Vue({
         board_height: game_preset.board_height,
         filled_lines: game_preset.filled_lines,
         fill_chance: game_preset.fill_chance,
-        game_duration: "0m:0s:0ms"
+        game_duration: "0m:0s:0ms",     
+        horizontal_sub_net: renderer_preset.horizontal_sub_net   
     },
     watch: {
         filled_lines: function(value, oldValue){
@@ -108,7 +115,11 @@ var app = new Vue({
         },
         sliding_interval: function(value, oldValue){
             controller.set_sliding_interval(value);
-        }
+        },    
+        horizontal_sub_net: function(value, oldValue){
+            renderer.horizontal_sub_net = value;
+            renderer.reset();
+        }    
     },
     methods: {
         changeColor: function(event){            
@@ -123,6 +134,7 @@ var app = new Vue({
             this.alt_colors[this.colorChoosing] = alt;
 
             renderer.setStyle(this.colors, {});
+            renderer_preview.setStyle(this.colors, {});
         },
         restart: function(){
             controller.restart();            
@@ -141,6 +153,14 @@ var app = new Vue({
               clearTimeout(timeout);
               timeout = setTimeout(resize, 200);
             };
+        },
+        updateOpacities: function(){            
+            renderer.setStyle({}, this.opacities);    
+            renderer_preview.setStyle({}, this.opacities);    
+        },
+        updateSubNet: function(){
+            renderer.sub_net_step = parseInt(this.sub_net_step);
+            renderer.reset();
         }
     },
     created: function() {

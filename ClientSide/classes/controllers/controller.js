@@ -11,7 +11,7 @@ function Controller(game, renderers){
     var last_action_time = Date.now();
     function registerTime(){
         var nowTime = Date.now();
-        console.log(nowTime - last_action_time);
+        //console.log(nowTime - last_action_time);
         last_action_time = nowTime;            
     }
 
