@@ -33,6 +33,7 @@ if (typeof cookie_presets === "undefined")
 else{
     controller_preset = cookie_presets.controller_preset;
     game_preset = cookie_presets.game_preset;
+    renderer_preset = cookie_presets.renderer_preset;
 }
 
 //cookie save interval
@@ -71,10 +72,10 @@ var app = new Vue({
     data: {
         colors: renderer_preset.colors,
         alt_colors: {
-            glass: "",        
-            net: "",
-            figure: "",
-            fill: "",
+            glass: generateAlternativeColor(renderer_preset.colors.glass),        
+            net: generateAlternativeColor(renderer_preset.colors.net),
+            figure: generateAlternativeColor(renderer_preset.colors.figure),
+            fill: generateAlternativeColor(renderer_preset.colors.fill),
         },
         colorChoosing: "",
         showDropDown: false,
