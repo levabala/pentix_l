@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport">    
+    <link rel="stylesheet" href="style.css">    
+
+    <title>PENTIX++</title>
+    <!--libs-->
+    <link rel="stylesheet" href="libs/css/google-material.css">
+    <link rel="stylesheet" href="libs/css/vue-material.css">
+    <link rel="stylesheet" href="libs/css/vue-material-default.css">
+  </head>
+
+  <body>
+    <div id="app">
+        <md-button v-bind:style="{ background: color, color: alternative_color}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=!showDropDown;colorChoosing='net_background'">
+            Choose color
+        </md-button>
+        <div v-if="showDropDown" style="position: absolute; background: white; z-index:10; border-radius: 3%">
+            <md-color-picker 
+                @change="changeColor"
+                ref="colorPicker"
+                color-margin="6" 
+                colors-per-row="5" 
+                color-size="54" 
+                default-tint="500" 
+                fixedMinHeight="true" 
+                palette="material-full" 
+                use-spectrum-picker="true" 
+                value="#eeff41">
+            <md-color-picker>
+        </div>
+    </div>
+    <script src="libs/vue.js"></script>
+    <script src="libs/vue-material.js"></script>  
+    <script src="libs/color-picker.js"></script>  
+    <script>
+        Vue.use(VueMaterial.default);
+        var app = new Vue({
+            el: '#app',
+            data: {        
+                alternative_color: "",        
+                color: "",
+                showDropDown: true
+            },
+            watch: {
+
+            },
+            methods: {
+                changeColor: function(event){            
+                    var color = event.detail[0];
+                    this.$refs.colorPicker.value = color;
+                    this.color = color;
+
+                    var alt = generateAlternativeColor(color)
+                    this.alternative_color = alt;
+                    console.log(alt)
+                }                
+            },
+            created: function() {
+                this.color_picker = document.getElementById('picker')
+            }          
+        });      
+        
+        function generateAlternativeColor(hex_color){
+            let color_value = parseInt("0x" + hex_color.replace("#", ''));            
+            let black = colorPicker.materialPalette["black"];
+            let white = colorPicker.materialPalette["white"]            
+            let while_value = parseInt("0x" + white.replace("#", ''));            
+
+            if (while_value - 2 * color_value > 0)
+                return white;
+            else return black;            
+        }
+    </script>
+  </body>
+</html>
