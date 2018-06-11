@@ -12,16 +12,16 @@ var game_preset = {
 };
 var renderer_preset = {
     colors: {
-        net_background: "lightgray",
-        net_lines: "black",
-        filled_cells: "lightblue",
-        figure_cells: "#80aaff",
+        glass: "lightgray",
+        net: "black",
+        fill: "lightblue",
+        figure: "#80aaff",
     },
     opacity: {
-        net_background: 0.3,
-        net_lines: 0.1,
-        filled_cells: 1,
-        figure_cells: 1,
+        glass: 0.3,
+        net: 0.1,
+        fill: 1,
+        figure: 1,
     }
 }
 var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
@@ -69,6 +69,13 @@ Vue.use(VueMaterial.default);
 var app = new Vue({
     el: '#app',
     data: {
+        colors: renderer_preset.colors,
+        alt_colors: {
+            glass: "",        
+            net: "",
+            figure: "",
+            fill: "",
+        },
         colorChoosing: "",
         showDropDown: false,
         fall_speed: 1,
@@ -103,9 +110,18 @@ var app = new Vue({
         }
     },
     methods: {
-        changeColor: function(event){
-            console.log(event)
-            renderer_preset.colors[this.colorChoosing] = event.detail[0];
+        changeColor: function(event){            
+            var color = event.detail[0];
+            this.$refs.colorPicker.value = color;
+            this.color = color;
+
+            var alt = generateAlternativeColor(color);
+            this.alternative_color = alt;      
+            
+            this.colors[this.colorChoosing] = color;
+            this.alt_colors[this.colorChoosing] = alt;
+
+            renderer.setStyle(this.colors, {});
         },
         restart: function(){
             controller.restart();            

@@ -41,3 +41,14 @@ function P(x, y){
         return p;
     }
 }
+
+function generateAlternativeColor(hex_color){
+    let color_value = parseInt("0x" + hex_color.replace("#", ''));            
+    let black = "#000000";
+    let white = "#ffffff";           
+    let while_value = parseInt("0x" + white.replace("#", ''));            
+
+    if (while_value - 2 * color_value > 0)
+        return white;
+    else return black;            
+}

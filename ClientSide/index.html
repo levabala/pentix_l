@@ -13,8 +13,7 @@
     <script src="libs/svg.min.js"></script>
     <script src="libs/jquery.min.js"></script>
     <script src="libs/socket.io.js"></script>
-    <script src="libs/cookies.js"></script>
-    <script src="libs/color-picker.js"></script>
+    <script src="libs/cookies.js"></script>    
     <!--end libs-->
 
     <!--internal-->
@@ -34,16 +33,24 @@
   </head>
 
   <body>
-    <div id="app" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
+    <div id="app" v-on:click="showDropDown=false" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
+        <div v-if="showDropDown" v-on:click.stop="" style="position: absolute; background: white; z-index:10; border-radius: 3%; left: 10px; top: 10px">
+                <md-color-picker
+                    @change="changeColor"
+                    ref="colorPicker"
+                    color-margin="6" 
+                    colors-per-row="5" 
+                    color-size="54" 
+                    default-tint="500" 
+                    fixedMinHeight="true" 
+                    palette="material-full" 
+                    use-spectrum-picker="true" 
+                    value="#eeff41">
+                <md-color-picker>
+            </div>
         <div id="left_column" style="position: absolute; left: 10px; top: 10px">            
-            <div id="div_controls" style="float: right; width: 135px">
-                <!--<md-button class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=!showDropDown;colorChoosing='net_background'">
-                    Choose color
-                </md-button>
-                <div v-if="showDropDown" style="position: absolute; background: white; z-index:10; border-radius: 3%">
-                        <md-color-picker color-margin="6" colors-per-row="5" color-size="54" default-tint="500" fixedMinHeight="true" palette="material-full" use-spectrum-picker="true" value="#eeff41"><md-color-picker>
-                </div>-->
-                <div v-if="!showDropDown">
+            <div id="div_controls" style="float: right; width: 135px" v-if="!showDropDown">                                    
+                <div>
                     Glass width:<br>
                     {{ board_width }} cells<br>
                     <input type="range" min="12" max="25" v-model="board_width" v-on:mouseup="updateBoardSize" class="slider">
@@ -82,20 +89,37 @@
         <div id="center_column" style="position: absolute; right: 150px; left: 150px; bottom: 10px; top: 10px;">
             <div id="div_gameboard" style="height: 100%"></div>                                             
         </div> 
-        <div id="right_column" style="position: absolute; left: 10px; top: 10px">
-            <div style="">
+        <div id="right_column" style="position: absolute; left: 10px; top: 10px">            
+            <div>
                 <div id="div_game_stats">
                         Lines done: {{lines_done}}/{{lines_need}}<br>
                         Game duration: {{game_duration}}<br>
                         <md-button class="md-raised md-accent" v-on:click="restart">Restart</md-button>
                 </div><br>
                 <div id="div_figure_preview"></div>                       
+                <br>
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass'">
+                    Glass color
+                </md-button>
+                <br>
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.net, color: alt_colors.net}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='net'">
+                    Net color
+                </md-button>
+                <br>
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.figure, color: alt_colors.figure}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='figure'">
+                    Figure color
+                </md-button>
+                <br>
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.fill, color: alt_colors.fill}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='fill'">
+                    Fill color
+                </md-button>                
             </div>
         </div>
     </div>
     
     <script src="libs/vue.js"></script>
     <script src="libs/vue-material.js"></script>    
+    <script src="libs/color-picker.js"></script>
     <script src="main.js"></script>
     <script>
         //UI script
