@@ -15,6 +15,13 @@ function Controller(game, renderers){
         last_action_time = nowTime;            
     }
 
+    this.pause = function(){
+        if (game.isPlaying)
+            game.pause();
+        else 
+            game.continue();
+    }
+
     this.set_falling_speed = function(value){
         game.fall_interval = 1 / value * 1000;
         registerTime();

@@ -58,7 +58,8 @@ function Game(preset = {}){
         game.board.initMap();
         game.board.initFigure(game.generateRandomFigure());
         clearTimeout(fallTimeout);
-        game.continue();                        
+        game.continue();
+        startTime = Date.now();                        
     }
 
     var timeInterval = null;
@@ -84,13 +85,16 @@ function Game(preset = {}){
     this.pause = function(){
         clearTimeout(fallTimeout);
         clearInterval(timeInterval);
+
+        game.isPlaying = false;
     }
 
-    this.continue = function(){
-        startTime = Date.now();        
+    this.continue = function(){             
+        game.isPlaying = true;
+        
         fallTick();
         clearInterval(timeInterval);
-        timeInterval = setInterval(timeUpdate, 33);
+        timeInterval = setInterval(timeUpdate, 33);        
     }
 
     function fall(){

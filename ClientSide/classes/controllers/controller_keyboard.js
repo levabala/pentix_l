@@ -29,6 +29,7 @@ function ControllerKeyboard(game, renderer, preset = {}, control_triggers = {}){
         exchange: [50, 83, 87],
         restart: [13],
         next_game: [],
+        pause: [27],
         slide_left_start: [],
         slide_left_stop: [],
         slide_right_start: [],

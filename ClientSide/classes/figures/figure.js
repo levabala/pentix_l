@@ -99,7 +99,7 @@ class Figure{
         }
     }
 
-    try_alternative_positons(max_delta = 5){
+    try_alternative_positons(max_delta = 6){
         let basePosition = this.center.clone();
         for (let d = 0; d < max_delta; d++){
             this.center.move(d, 0);

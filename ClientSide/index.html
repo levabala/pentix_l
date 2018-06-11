@@ -16,7 +16,7 @@
     <script src="libs/cookies.js"></script>    
     <!--end libs-->
 
-    <!--internal-->
+    <!--internal-->    
     <script src="additional/assemblies.js"></script>
     <script src="additional/reactor.js"></script>
     <script src="additional/matrix.js"></script>
@@ -83,11 +83,11 @@
                     {{ sliding_interval }} milliseconds<br>
                     <input type="range" min="1" max="100" v-model="sliding_interval" class="slider">
                     <br>
-                    Sub-net step:<br>
-                    {{ sub_net_step }} cells<br>
-                    <input type="range" min=1 max=10 v-model="sub_net_step" v-on:mouseup="updateSubNet" class="slider">
+                    Sub-grid step:<br>
+                    {{ sub_grid_step }} cells<br>
+                    <input type="range" min=1 max=10 v-model="sub_grid_step" v-on:mouseup="updateSubGrid" class="slider">
                     <br>
-                    <md-switch v-model="horizontal_sub_net">Horizontal Sub-Net</md-switch>
+                    <md-switch v-model="horizontal_sub_grid">Horizontal Sub-Grid</md-switch>
                     <br> 
                 </div>                     
             </div> 
@@ -102,14 +102,14 @@
                         Game duration: {{game_duration}}<br>
                         <md-button class="md-raised md-accent" style="margin-left: 0px" v-on:click="restart">Restart</md-button>
                 </div><br>
-                <div id="div_figure_preview" style="width: 10px; height: 100px"></div>                       
-                <br>
+                <input type="range" min=10 max=200 style="width: 100px; float: left;" v-model="preview_height" class="slider">                 
+                <div id="div_figure_preview" v-bind:style="{height: preview_height + 'px'}" style="width: 10px; height: 100px; margin-top:20px"></div>                                                    
                 <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass'">
                     Glass color
                 </md-button>
                 <br>
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.net, color: alt_colors.net}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='net'">
-                    Net color
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.grid, color: alt_colors.grid}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='grid'">
+                    Grid color
                 </md-button>
                 <br>
                 <md-button v-on:click.stop="" v-bind:style="{ background: colors.figure, color: alt_colors.figure}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='figure'">
@@ -123,9 +123,9 @@
                 {{ Math.floor(opacities.glass * 100) }}%<br>
                 <input type="range" min=0 max=1 step=0.1 v-model="opacities.glass" v-on:mouseup="updateOpacities" class="slider">
                 <br>              
-                Net opacity:<br>
-                {{ Math.floor(opacities.net * 100) }}%<br>
-                <input type="range" min=0 max=1 step=0.1 v-model="opacities.net" v-on:mouseup="updateOpacities" class="slider">
+                Grid opacity:<br>
+                {{ Math.floor(opacities.grid * 100) }}%<br>
+                <input type="range" min=0 max=1 step=0.1 v-model="opacities.grid" v-on:mouseup="updateOpacities" class="slider">
                 <br>
                 Figure opacity:<br>
                 {{ Math.floor(opacities.figure * 100)}}%<br>

@@ -13,55 +13,29 @@ var game_preset = {
 var renderer_preset = {
     colors: {
         glass: "lightgray",
-        net: "black",
+        grid: "black",
         fill: "lightblue",
         figure: "#80aaff",
     },
     opacities: {
         glass: 0.3,
-        net: 0.1,
+        grid: 0.1,
         fill: 1,
         figure: 1,
     },
-    sub_net_step: 5,
-    horizontal_sub_net: false
+    sub_grid_step: 5,
+    horizontal_sub_grid: false
 };
 var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
 
 //cookie restore
 var cookie_presets = Cookies.getJSON("presets");
-if (Object.keys(cookie_presets).length == 0)
+if (typeof cookie_presets === "undefined" || Object.keys(cookie_presets).length == 0)
     Cookies.set("presets", {});     
 else{
     controller_preset = cookie_presets.controller_preset;
     game_preset = cookie_presets.game_preset;
     renderer_preset = cookie_presets.renderer_preset;
-}
-
-//cookies save interval
-setTimeout(() => setInterval(saveCookies, 1999), 0);
-function saveCookies(){
-    var presets = {
-        controller_preset: {
-            sliding_start_delay: controller.sliding_start_delay,
-            sliding_interval: controller.sliding_interval,
-            fall_speed: controller.fall_speed
-        },
-        game_preset: {
-            board_width: game.board_width,
-            board_height: game.board_height,
-            lines_need: game.lines_need,
-            filled_lines: game.filled_lines,
-            fill_chance: game.fill_chance
-        },
-        renderer_preset: {
-            colors: renderer.colors,
-            opacities: renderer.opacities,
-            sub_net_step: renderer.sub_net_step,
-            horizontal_sub_net: renderer.horizontal_sub_net
-        }
-    };
-    Cookies.set("presets", presets);               
 }
 
 
@@ -76,10 +50,10 @@ var app = new Vue({
     data: {
         colors: renderer_preset.colors,
         opacities: renderer_preset.opacities,
-        sub_net_step: renderer_preset.sub_net_step,
+        sub_grid_step: renderer_preset.sub_grid_step,
         alt_colors: {
             glass: generateAlternativeColor(renderer_preset.colors.glass),        
-            net: generateAlternativeColor(renderer_preset.colors.net),
+            grid: generateAlternativeColor(renderer_preset.colors.grid),
             figure: generateAlternativeColor(renderer_preset.colors.figure),
             fill: generateAlternativeColor(renderer_preset.colors.fill),
         },        
@@ -95,7 +69,8 @@ var app = new Vue({
         filled_lines: game_preset.filled_lines,
         fill_chance: game_preset.fill_chance,
         game_duration: "0m:0s:0ms",     
-        horizontal_sub_net: renderer_preset.horizontal_sub_net   
+        horizontal_sub_grid: renderer_preset.horizontal_sub_grid,
+        preview_height: 100
     },
     watch: {
         filled_lines: function(value, oldValue){
@@ -116,8 +91,8 @@ var app = new Vue({
         sliding_interval: function(value, oldValue){
             controller.set_sliding_interval(value);
         },    
-        horizontal_sub_net: function(value, oldValue){
-            renderer.horizontal_sub_net = value;
+        horizontal_sub_grid: function(value, oldValue){
+            renderer.horizontal_sub_grid = value;
             renderer.reset();
         }    
     },
@@ -158,8 +133,8 @@ var app = new Vue({
             renderer.setStyle({}, this.opacities);    
             renderer_preview.setStyle({}, this.opacities);    
         },
-        updateSubNet: function(){
-            renderer.sub_net_step = parseInt(this.sub_net_step);
+        updateSubGrid: function(){
+            renderer.sub_grid_step = parseInt(this.sub_grid_step);
             renderer.reset();
         }
     },
@@ -199,6 +174,29 @@ renderer.init();
 renderer_preview.init();
 game.start();
 
-//socket.io
-//var client = new Client();
+//cookies save interval
+setTimeout(() => setInterval(saveCookies, 1999), 0);
+function saveCookies(){
+    var presets = {
+        controller_preset: {
+            sliding_start_delay: controller.sliding_start_delay,
+            sliding_interval: controller.sliding_interval,
+            fall_speed: controller.fall_speed
+        },
+        game_preset: {
+            board_width: game.board_width,
+            board_height: game.board_height,
+            lines_need: game.lines_need,
+            filled_lines: game.filled_lines,
+            fill_chance: game.fill_chance
+        },
+        renderer_preset: {
+            colors: renderer.colors,
+            opacities: renderer.opacities,
+            sub_grid_step: renderer.sub_grid_step,
+            horizontal_sub_grid: renderer.horizontal_sub_grid
+        }
+    };
+    Cookies.set("presets", presets);               
+}
 

@@ -4,18 +4,18 @@ function Renderer(div, board, preset = {}){
     this.board = board;
     this.scaledWidth = 0;
     this.scaledHeight = 0;   
-    this.sub_net_step = 5;
-    this.horizontal_sub_net = false;
+    this.sub_grid_step = 5;
+    this.horizontal_sub_grid = false;
     this.colors = {
         glass: "lightgray",
-        net: "black",
+        grid: "black",
         fill: "lightblue",
         figure: "#80aaff",
     };
     this.opacities = {
         glass: 0.7,
-        net: 0.2,
-        sub_net: 0.2,
+        grid: 0.2,
+        sub_grid: 0.2,
         fill: 1,
         figure: 1,
     };
@@ -30,15 +30,17 @@ function Renderer(div, board, preset = {}){
     var scaleNested = this.draw.nested();
     mainGroup.add(scaleNested);     
 
-    var netNested = scaleNested.nested();
+    var gridNested = scaleNested.nested();
     var cellsNested = scaleNested.nested();
     var figureNested = scaleNested.nested(); 
 
     var scale = 1;        
     var div_jq = $(div);
+    var lastDivWidth = 0;
+    var lastDivHeight = 0;
     this.rescale = function(){          
-        var width = div_jq.width();  
-        var height = div_jq.height();
+        var width = lastDivWidth = div_jq.width();  
+        var height = lastDivHeight = div_jq.height();
         mainGroup.scale(1 / scale, 1 / scale);
         scale = Math.round(Math.min(width * 0.99 / board.width, height * 0.99 / board.height) * 100) / 100;                
         r.scaledWidth = width / scale;
@@ -55,18 +57,14 @@ function Renderer(div, board, preset = {}){
         r.draw.remove();
         r.draw = SVG(div);        
         mainGroup = this.draw.group();
-        scaleNested = this.draw.nested();                        
-        cellsNested = scaleNested.nested();
-        figureNested = scaleNested.nested();
-        netNested = scaleNested.nested();
-        mainGroup.add(scaleNested);
+        scaleNested = this.draw.nested();                                
 
         //triple rescale to normalize containing div 
         r.rescale();                           
         r.rescale();
         r.rescale();                                 
         
-        scaleNested.rect(board.width, board.height).attr(
+        var rect = scaleNested.rect(board.width, board.height).attr(
                 {
                     stroke: "none", 
                     "stroke-width": 0.1, 
@@ -74,11 +72,15 @@ function Renderer(div, board, preset = {}){
                     "fill-opacity": renderer.opacities.glass}
             );                        
 
+        cellsNested = scaleNested.nested();
+        figureNested = scaleNested.nested();
+        gridNested = scaleNested.nested();
+        mainGroup.add(scaleNested);
         drawCells();
         drawFigure();
         drawNet();                
 
-        //r.launchRescaleTimer();
+        r.launchRescaleTimer();
         r.launchRedrawTimer();
     }    
 
@@ -114,7 +116,8 @@ function Renderer(div, board, preset = {}){
     this.launchRescaleTimer = function(){
         clearInterval(rescaleInterval)
         rescaleInterval = setInterval(() => {
-            r.rescale();
+            if (Math.abs(div_jq.width() - lastDivWidth) + Math.abs(div_jq.height() - lastDivHeight) > 2)            
+                r.init();
         }, 100);
     }
 
@@ -123,30 +126,30 @@ function Renderer(div, board, preset = {}){
     }
 
     function drawNet(){     
-        netNested.clear();   
-        //main net
+        gridNested.clear();   
+        //main grid
         for (var x = 0; x <= board.width; x++)
-            netNested.add(r.draw.line(x, 0, x, board.height).stroke(
+            gridNested.add(r.draw.line(x, 0, x, board.height).stroke(
                 {
-                    width: 0.1, opacity: renderer.opacities.net, color: renderer.colors.net
+                    width: 0.1, opacity: renderer.opacities.grid, color: renderer.colors.grid
                 }));
         for (var y = 0; y <= board.height; y++)
-            netNested.add(r.draw.line(0, y, board.width, y).stroke(
+            gridNested.add(r.draw.line(0, y, board.width, y).stroke(
                 {
-                    width: 0.1, opacity: renderer.opacities.net, color: renderer.colors.net
+                    width: 0.1, opacity: renderer.opacities.grid, color: renderer.colors.grid
                 }));
-        //sub net
-        if (renderer.sub_net_step < board.width)
-            for (var x = 0; x <= board.width; x+=renderer.sub_net_step)
-                netNested.add(r.draw.line(x, 0, x, board.height).stroke(
+        //sub grid
+        if (renderer.sub_grid_step < board.width)
+            for (var x = 0; x <= board.width; x+=renderer.sub_grid_step)
+                gridNested.add(r.draw.line(x, 0, x, board.height).stroke(
                     {
-                        width: 0.1, opacity: renderer.opacities.sub_net, color: renderer.colors.sub_net
+                        width: 0.1, opacity: renderer.opacities.sub_grid, color: renderer.colors.sub_grid
                     }));
-        if (renderer.horizontal_sub_net && renderer.sub_net_step < board.height)
-            for (var y = 0; y <= board.height; y+=renderer.sub_net_step)
-                netNested.add(r.draw.line(0, y, board.width, y).stroke(
+        if (renderer.horizontal_sub_grid && renderer.sub_grid_step < board.height)
+            for (var y = 0; y <= board.height; y+=renderer.sub_grid_step)
+                gridNested.add(r.draw.line(0, y, board.width, y).stroke(
                     {
-                        width: 0.1, opacity: renderer.opacities.sub_net, color: renderer.colors.sub_net
+                        width: 0.1, opacity: renderer.opacities.sub_grid, color: renderer.colors.sub_grid
                     }));
     }
 
