@@ -36,20 +36,22 @@ var preset_updated_time = Date.now();
 var preset_updated = false;
 
 //cookies restore
-var cookie_all_presets = Cookies.getJSON("all_presets");
-console.log(cookie_all_presets)
-if (typeof cookie_all_presets === "undefined" || Object.keys(cookie_all_presets).length == 0)
-    Cookies.set("all_presets", {});     
-else
-    presets_manager.setPresets(cookie_all_presets.presets, cookie_all_presets.presets_active);
+/*if (document.cookie[0] != "{")
+    document.cookie = "{}";
+else {
+    var cookie_all_presets = JSON.parse(document.cookie);
+    if (Object.keys(cookie_all_presets).length > 0)
+        presets_manager.setPresets(cookie_all_presets.presets, cookie_all_presets.presets_active);
+}
+console.log(pm.presets_active.renderer.data)*/
 
 //apply page background
 document.getElementById("body").style.background = pm.presets_active[Preset.RENDERER].data.colors.background; 
 
 
 //init global classes
-var game = new Game(game_preset.data);
-var controller = new ControllerKeyboard(game, {}, controller_preset.data);
+var game = new Game(pm.presets_active.game.data);
+var controller = new ControllerKeyboard(game, {}, pm.presets_active.controller.data);
 
 //init vue.js model
 Vue.use(VueMaterial.default);
@@ -209,8 +211,9 @@ var statisticMiner = new StatisticMiner(game, (stats) => {
 statisticMiner.start();
 
 //init renderer (after vue.js - it's important!)
-var renderer = new Renderer(document.getElementById("div_gameboard"), game.board, renderer_preset.data);
-var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), game.board_next_figure_preview, renderer_preset.data);
+console.log(pm.presets_active.renderer.data)
+var renderer = new Renderer(document.getElementById("div_gameboard"), game.board, pm.presets_active.renderer.data);
+var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), game.board_next_figure_preview, pm.presets_active.renderer.data);
 
 //connect renderers to controller
 controller.renderers = [renderer, renderer_preview];
@@ -243,22 +246,28 @@ function saveCookies(){
             fill_chance: game.fill_chance
         }),
         renderer: new Preset(generateUnicId(), {
-            colors: renderer.colors,
+            colors: objectDeepClone(renderer.colors),
             opacities: renderer.opacities,
             sub_grid_step: renderer.sub_grid_step,
             horizontal_sub_grid: renderer.horizontal_sub_grid,
             background: renderer.colors.background
         })
-    };
-    pm.addActivePresets(presets_active);
-    console.log(pm)
-    console.log({presets: pm.presets, presets_active: pm.presets_active})
-    Cookies.set("all_presets", JSON.stringify({presets: pm.presets, presets_active: pm.presets_active}));             
-    console.log(Cookies.getJSON("all_presets"))
-    console.log(presets_active)
+    };    
+    pm.addActivePresets(presets_active);     
+    /*
+    document.cookie = JSON.stringify({presets: pm.presets, presets_active: pm.presets_active});    
+    var preset = JSON.parse(document.cookie);
+    console.log("W:", pm.presets_active.renderer.data.colors.background, pm.presets_active.renderer.data.colors.glass)
+    console.log("R:", preset.presets_active.renderer.data.colors.background, preset.presets_active.renderer.data.colors.glass)
+    */
+    document.cookie = JSON.stringify({a: renderer.colors.background});    
+    var preset = JSON.parse(document.cookie);
+    console.log("W:", {a: renderer.colors.background});
+    console.log("W:", {a: pm.presets_active.renderer.data.colors.background});
+    console.log("R:", preset);
 }
 
 function clearCookies(){
     doCookies = false;
-    Cookies.remove("all_presets");               
+    document.cookie = "";     
 }

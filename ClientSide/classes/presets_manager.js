@@ -19,8 +19,8 @@ class PresetsManager{
     }
 
     setPresets(presets, presets_active){
-        this.presets = presets;
-        this.presets_active = presets_active;        
+        this.presets = objectDeepClone(presets);
+        this.presets_active = objectDeepClone(presets_active);        
     }
 
     addPreset(preset_type, preset){

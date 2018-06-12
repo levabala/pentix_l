@@ -91,8 +91,7 @@ function Renderer(div, board, preset = {}){
         for (let property in colors)
             renderer.colors[property] = colors[property];
         for (let property in opacities)
-            renderer.opacities[property] = opacities[property];
-        console.log(renderer.colors)
+            renderer.opacities[property] = opacities[property];        
         renderer.init();
     }
 
