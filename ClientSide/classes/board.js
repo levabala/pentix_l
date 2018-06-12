@@ -77,10 +77,18 @@ function Board(boardStackedCallback, lineClearedCallback, figureDropCallback, wi
     }
 
     function random_fill(lines = 3, fill_chance = 0.5){        
-        for (var x = 0; x < board.width; x++)
-            for (var y = board.height - 1; y > board.height - lines - 1; y--)
+        for (var y = board.height - 1; y > board.height - lines - 1; y--){
+            var full_line = true;
+            for (var x = 0; x < board.width; x++){        
                 if (Math.random() <= fill_chance)
                     board.cells[x][y] = 1;
+                else 
+                    full_line = false;
+            }
+            //full lines are not allowed
+            if (full_line)
+                board.cells[Math.floor(Math.random() * board.width)][y] = 0;
+        }
         update();
     }
 

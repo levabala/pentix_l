@@ -52,3 +52,31 @@ function generateAlternativeColor(hex_color){
         return white;
     else return black;            
 }
+
+function generateUnicId() {    
+    return '_' + (Date.now().toString(36) + Math.random().toString(36).substr(2, 9));
+}
+
+function objectDeepClone(obj){
+    var clone = {};
+    try{
+        clone = JSON.parse(JSON.stringify(obj));
+    }
+    catch(e){
+        if (obj === null || typeof(obj) !== 'object' || 'isActiveClone' in obj)
+            return obj;
+
+        if (obj instanceof Date)
+            clone = new obj.constructor();
+        else
+            clone = obj.constructor();
+
+        for (var key in obj)
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                obj.isActiveClone = null;
+                clone[key] = clone(obj[key]);
+                delete obj.isActiveClone;
+            }        
+    }
+    return clone;
+}

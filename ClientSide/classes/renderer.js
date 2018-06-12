@@ -11,6 +11,7 @@ function Renderer(div, board, preset = {}){
         grid: "black",
         fill: "lightblue",
         figure: "#80aaff",
+        background: "#FFFFFF"
     };
     this.opacities = {
         glass: 0.7,
@@ -91,7 +92,7 @@ function Renderer(div, board, preset = {}){
             renderer.colors[property] = colors[property];
         for (let property in opacities)
             renderer.opacities[property] = opacities[property];
-        
+        console.log(renderer.colors)
         renderer.init();
     }
 
@@ -145,13 +146,13 @@ function Renderer(div, board, preset = {}){
             for (var x = 0; x <= board.width; x+=renderer.sub_grid_step)
                 gridNested.add(r.draw.line(x, 0, x, board.height).stroke(
                     {
-                        width: 0.1, opacity: renderer.opacities.sub_grid, color: renderer.colors.sub_grid
+                        width: 0.1, opacity: renderer.opacities.sub_grid * 1.2, color: renderer.colors.grid
                     }));
         if (renderer.horizontal_sub_grid && renderer.sub_grid_step < board.height)
             for (var y = 0; y <= board.height; y+=renderer.sub_grid_step)
                 gridNested.add(r.draw.line(0, y, board.width, y).stroke(
                     {
-                        width: 0.1, opacity: renderer.opacities.sub_grid, color: renderer.colors.sub_grid
+                        width: 0.1, opacity: renderer.opacities.sub_grid * 1.2, color: renderer.colors.grid
                     }));
     }
 

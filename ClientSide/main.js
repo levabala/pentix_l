@@ -1,16 +1,16 @@
 //start values
-var controller_preset = {
+var controller_preset = new Preset("_base_controller", {
     sliding_start_delay: 120,
     sliding_interval: 30,
-};
-var game_preset = {
-    board_width: 14,
+});
+var game_preset = new Preset("_base_game", {
+    board_width: 15,
     board_height: 25,
     lines_need: 20,
     filled_lines: 7,
     fill_chance: 0.7
-};
-var renderer_preset = {
+});
+var renderer_preset = new Preset("_base_renderer", {
     colors: {
         glass: "lightgray",
         grid: "black",
@@ -25,81 +25,99 @@ var renderer_preset = {
         figure: 1,
     },
     sub_grid_step: 5,
-    horizontal_sub_grid: false,    
-};
-var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
+    horizontal_sub_grid: false
+});
+var presets_manager = new PresetsManager([game_preset], [renderer_preset], [controller_preset]);
+//shortcut
+var pm = presets_manager;
 
-//cookie restore
-var cookie_presets = Cookies.getJSON("presets");
-if (typeof cookie_presets === "undefined" || Object.keys(cookie_presets).length == 0)
-    Cookies.set("presets", {});     
-else{
-    controller_preset = cookie_presets.controller_preset;
-    game_preset = cookie_presets.game_preset;
-    renderer_preset = cookie_presets.renderer_preset;
-}
+//for cookies updating
+var preset_updated_time = Date.now();
+var preset_updated = false;
+
+//cookies restore
+var cookie_all_presets = Cookies.getJSON("all_presets");
+console.log(cookie_all_presets)
+if (typeof cookie_all_presets === "undefined" || Object.keys(cookie_all_presets).length == 0)
+    Cookies.set("all_presets", {});     
+else
+    presets_manager.setPresets(cookie_all_presets.presets, cookie_all_presets.presets_active);
 
 //apply page background
-document.getElementById("body").style.background = renderer_preset.colors.background; 
+document.getElementById("body").style.background = pm.presets_active[Preset.RENDERER].data.colors.background; 
 
 
 //init global classes
-var game = new Game(game_preset);
-var controller = new ControllerKeyboard(game, {}, controller_preset);
+var game = new Game(game_preset.data);
+var controller = new ControllerKeyboard(game, {}, controller_preset.data);
 
 //init vue.js model
 Vue.use(VueMaterial.default);
 var app = new Vue({
     el: '#app',
     data: {
-        colors: renderer_preset.colors,
-        opacities: renderer_preset.opacities,
-        sub_grid_step: renderer_preset.sub_grid_step,
+        colors: pm.presets_active.renderer.data.colors,
+        opacities: pm.presets_active.renderer.data.opacities,
+        sub_grid_step: pm.presets_active.renderer.data.sub_grid_step,
         alt_colors: {
-            glass: generateAlternativeColor(renderer_preset.colors.glass),        
-            grid: generateAlternativeColor(renderer_preset.colors.grid),
-            figure: generateAlternativeColor(renderer_preset.colors.figure),
-            fill: generateAlternativeColor(renderer_preset.colors.fill),
-            background: generateAlternativeColor(renderer_preset.colors.background),
+            glass: generateAlternativeColor(pm.presets_active.renderer.data.colors.glass),        
+            grid: generateAlternativeColor(pm.presets_active.renderer.data.colors.grid),
+            figure: generateAlternativeColor(pm.presets_active.renderer.data.colors.figure),
+            fill: generateAlternativeColor(pm.presets_active.renderer.data.colors.fill),
+            background: generateAlternativeColor(pm.presets_active.renderer.data.colors.background),
         },        
         colorChoosing: "none",        
         showDropDown: false,
         fall_speed: 1,
-        sliding_start_delay: controller_preset.sliding_start_delay,
-        sliding_interval: controller_preset.sliding_interval,
+        sliding_start_delay: pm.presets_active.controller.data.sliding_start_delay,
+        sliding_interval: pm.presets_active.controller.data.sliding_interval,
         lines_done: 0,
-        lines_need: game_preset.lines_need,
-        board_width: game_preset.board_width,
-        board_height: game_preset.board_height,
-        filled_lines: game_preset.filled_lines,
-        fill_chance: game_preset.fill_chance,
+        lines_need: pm.presets_active.game.data.lines_need,
+        board_width: pm.presets_active.game.data.board_width,
+        board_height: pm.presets_active.game.data.board_height,
+        filled_lines: pm.presets_active.game.data.filled_lines,
+        fill_chance: pm.presets_active.game.data.fill_chance,
         game_duration: "0m:0s:0ms",     
-        horizontal_sub_grid: renderer_preset.horizontal_sub_grid,
+        horizontal_sub_grid: pm.presets_active.renderer.data.horizontal_sub_grid,
         preview_height: 100,
         hide_interface: false,                
     },
     watch: {
         filled_lines: function(value, oldValue){
             game.filled_lines = value;
+            preset_updated = Date.now();
+            preset_updated = true;
         },
         fill_chance: function(value, oldValue){
             game.fill_chance = value;
+            preset_updated = Date.now();
+            preset_updated = true;
         },
         lines_need: function(value, oldValue){
             game.lines_need = value;
+            preset_updated = Date.now();
+            preset_updated = true;
         },
         fall_speed: function(value, oldValue){
             controller.set_falling_speed(value);
+            preset_updated = Date.now();
+            preset_updated = true;
         },
         sliding_start_delay: function(value, oldValue){
             controller.set_sliding_start_delay(value);
+            preset_updated = Date.now();
+            preset_updated = true;
         },
         sliding_interval: function(value, oldValue){
             controller.set_sliding_interval(value);
+            preset_updated = Date.now();
+            preset_updated = true;
         },    
         horizontal_sub_grid: function(value, oldValue){
             renderer.horizontal_sub_grid = value;
             renderer.reset();
+            preset_updated = Date.now();
+            preset_updated = true;
         }    
     },
     methods: {
@@ -111,13 +129,13 @@ var app = new Vue({
             var alt = generateAlternativeColor(color);
             this.alternative_color = alt;      
             
+            preset_updated = Date.now();
+            preset_updated = true;
+
             if (this.colorChoosing == "background"){
                 var body = document.getElementById("body");
                 body.style.background = color;           
-                body.style.color = alt;
-                this.alt_color_background = alt;     
-                renderer_preset.background = color;
-                return;           
+                body.style.color = alt;                
             }
 
             if (!(this.colorChoosing in this.colors))
@@ -127,13 +145,16 @@ var app = new Vue({
 
             renderer.setStyle(this.colors, {});
             renderer_preview.setStyle(this.colors, {});
+            renderer_preview.init();
         },
         restart: function(){
             controller.restart();            
         },
         updateBoardSize: function(){
             game.board_width = app.board_width;            
-            game.board_height = app.board_height;                      
+            game.board_height = app.board_height;    
+            preset_updated = Date.now();    
+            preset_updated = true;              
         },
         checkResize: function(){
             function resize(){
@@ -148,11 +169,15 @@ var app = new Vue({
         },
         updateOpacities: function(){            
             renderer.setStyle({}, this.opacities);    
-            renderer_preview.setStyle({}, this.opacities);    
+            renderer_preview.setStyle({}, this.opacities);   
+            preset_updated = Date.now(); 
+            preset_updated = true;
         },
         updateSubGrid: function(){
             renderer.sub_grid_step = parseInt(this.sub_grid_step);
             renderer.reset();
+            preset_updated = Date.now();
+            preset_updated = true;
         },
         resetPalette: function(){
             var picker = document.getElementById("colorPicker");
@@ -184,8 +209,8 @@ var statisticMiner = new StatisticMiner(game, (stats) => {
 statisticMiner.start();
 
 //init renderer (after vue.js - it's important!)
-var renderer = new Renderer(document.getElementById("div_gameboard"), game.board, renderer_preset);
-var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), game.board_next_figure_preview, renderer_preset);
+var renderer = new Renderer(document.getElementById("div_gameboard"), game.board, renderer_preset.data);
+var renderer_preview = new Renderer(document.getElementById("div_figure_preview"), game.board_next_figure_preview, renderer_preset.data);
 
 //connect renderers to controller
 controller.renderers = [renderer, renderer_preview];
@@ -196,35 +221,44 @@ renderer_preview.init();
 
 //cookies save interval
 var doCookies = true;
+var cookies_after_update_time = 2000;
 setTimeout(() => {setInterval(saveCookies, 1999)}, 0);
-function saveCookies(){
-    if (!doCookies) 
+function saveCookies(){    
+    if (!doCookies || !preset_updated || !Date.now() - preset_updated_time > cookies_after_update_time) 
         return;
-    var presets = {
-        controller_preset: {
+
+    preset_updated = false;
+
+    var presets_active = {
+        controller: new Preset(generateUnicId(), {
             sliding_start_delay: controller.sliding_start_delay,
             sliding_interval: controller.sliding_interval,
             fall_speed: controller.fall_speed
-        },
-        game_preset: {
+        }),
+        game: new Preset(generateUnicId(), {
             board_width: game.board_width,
             board_height: game.board_height,
             lines_need: game.lines_need,
             filled_lines: game.filled_lines,
             fill_chance: game.fill_chance
-        },
-        renderer_preset: {
+        }),
+        renderer: new Preset(generateUnicId(), {
             colors: renderer.colors,
             opacities: renderer.opacities,
             sub_grid_step: renderer.sub_grid_step,
             horizontal_sub_grid: renderer.horizontal_sub_grid,
-            background: renderer_preset.background
-        }
+            background: renderer.colors.background
+        })
     };
-    Cookies.set("presets", presets);               
+    pm.addActivePresets(presets_active);
+    console.log(pm)
+    console.log({presets: pm.presets, presets_active: pm.presets_active})
+    Cookies.set("all_presets", JSON.stringify({presets: pm.presets, presets_active: pm.presets_active}));             
+    console.log(Cookies.getJSON("all_presets"))
+    console.log(presets_active)
 }
 
 function clearCookies(){
     doCookies = false;
-    Cookies.remove("presets");               
+    Cookies.remove("all_presets");               
 }
