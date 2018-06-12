@@ -16,6 +16,7 @@ var renderer_preset = {
         grid: "black",
         fill: "lightblue",
         figure: "#80aaff",
+        background: "#FFFFFF"
     },
     opacities: {
         glass: 0.3,
@@ -24,8 +25,7 @@ var renderer_preset = {
         figure: 1,
     },
     sub_grid_step: 5,
-    horizontal_sub_grid: false,
-    background: "#FFFFFF",
+    horizontal_sub_grid: false,    
 };
 var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
 
@@ -40,7 +40,7 @@ else{
 }
 
 //apply page background
-document.getElementById("body").style.background = renderer_preset.background; 
+document.getElementById("body").style.background = renderer_preset.colors.background; 
 
 
 //init global classes
@@ -60,8 +60,9 @@ var app = new Vue({
             grid: generateAlternativeColor(renderer_preset.colors.grid),
             figure: generateAlternativeColor(renderer_preset.colors.figure),
             fill: generateAlternativeColor(renderer_preset.colors.fill),
+            background: generateAlternativeColor(renderer_preset.colors.background),
         },        
-        colorChoosing: "none",
+        colorChoosing: "none",        
         showDropDown: false,
         fall_speed: 1,
         sliding_start_delay: controller_preset.sliding_start_delay,
@@ -75,9 +76,7 @@ var app = new Vue({
         game_duration: "0m:0s:0ms",     
         horizontal_sub_grid: renderer_preset.horizontal_sub_grid,
         preview_height: 100,
-        hide_interface: false,
-        alt_color_background: "#000000",//generateAlternativeColor(renderer_preset.background),
-        background: renderer_preset.background,                        
+        hide_interface: false,                
     },
     watch: {
         filled_lines: function(value, oldValue){
@@ -112,7 +111,7 @@ var app = new Vue({
             var alt = generateAlternativeColor(color);
             this.alternative_color = alt;      
             
-            if (this.colorChoosing == "background_color"){
+            if (this.colorChoosing == "background"){
                 var body = document.getElementById("body");
                 body.style.background = color;           
                 body.style.color = alt;

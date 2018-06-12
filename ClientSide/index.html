@@ -105,11 +105,11 @@
                 </div><br>
                 <input type="range" min=10 max=200 style="width: 100px; float: left;" v-model="preview_height" class="slider">                 
                 <div id="div_figure_preview" v-bind:style="{height: preview_height + 'px'}" style="width: 10px; height: 100px; margin-top:20px"></div>                                                    
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_color_background}" class="md-dense md-primary" style="margin-left: 0px;" v-on:click="colorChoosing='glass'">
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.background, color: alt_colors.background}" class="md-dense md-primary" style="margin-left: 0px;" v-on:click="showDropDown=true;colorChoosing='background';">
                     Background
                 </md-button>
                 <br>
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass';this.colorPicker.subPalette=undefined">
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass';">
                     Glass color
                 </md-button>
                 <br>
