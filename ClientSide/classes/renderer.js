@@ -5,7 +5,7 @@ function Renderer(div, board, preset = {}){
     this.scaledWidth = 0;
     this.scaledHeight = 0;   
     this.sub_grid_step = 5;
-    this.horizontal_sub_grid = false;
+    this.horizontal_sub_grid = false;    
     this.colors = {
         glass: "lightgray",
         grid: "black",
@@ -101,6 +101,8 @@ function Renderer(div, board, preset = {}){
     this.launchRedrawTimer = function(){
         clearInterval(redrawInterval)
         redrawInterval = setInterval(() => {
+            if (!board.figure)
+                return;
             if (board.timecode != lastBoardTimecode){
                 board.timecode = lastBoardTimecode;
                 drawCells();                                            

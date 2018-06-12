@@ -32,12 +32,11 @@
     <!--end internal-->
   </head>
 
-  <body>
-    <div id="app" v-on:click="showDropDown=false" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
+  <body id="body">
+    <div id="app" v-on:click="showDropDown=false;" style="position: absolute; bottom: 10px; left: 10px; top: 10px; right: 10px">            
         <div v-if="showDropDown" v-on:click.stop="" style="position: absolute; background: white; z-index:10; border-radius: 3%; left: 10px; top: 10px">
-                <md-color-picker
-                    @change="changeColor"
-                    ref="colorPicker"
+                <md-color-picker                    
+                    @change="changeColor"                    
                     color-margin="6" 
                     colors-per-row="5" 
                     color-size="54" 
@@ -45,10 +44,12 @@
                     fixedMinHeight="true" 
                     palette="material-full" 
                     use-spectrum-picker="true" 
-                    value="#eeff41">
+                    value="#eeff41"      
+                    ref="colorPicker"              
+                    v-bind:value="colors[colorChoosing]">
                 <md-color-picker>
             </div>
-        <div id="left_column" style="position: absolute; left: 10px; top: 10px">            
+        <div v-if="!hide_interface" id="left_column" style="position: absolute; left: 10px; top: 10px">            
             <div id="div_controls" style="float: right; width: 135px" v-if="!showDropDown">                                    
                 <div>
                     Glass width:<br>
@@ -95,7 +96,7 @@
         <div id="center_column" style="position: absolute; right: 150px; left: 150px; bottom: 10px; top: 10px;">
             <div id="div_gameboard" style="height: 100%"></div>                                             
         </div> 
-        <div id="right_column" style="position: absolute; left: 10px; top: 10px">            
+        <div v-if="!hide_interface" id="right_column" style="position: absolute; left: 10px; top: 10px">            
             <div>
                 <div id="div_game_stats">
                         Lines done: {{lines_done}}/{{lines_need}}<br>
@@ -104,19 +105,23 @@
                 </div><br>
                 <input type="range" min=10 max=200 style="width: 100px; float: left;" v-model="preview_height" class="slider">                 
                 <div id="div_figure_preview" v-bind:style="{height: preview_height + 'px'}" style="width: 10px; height: 100px; margin-top:20px"></div>                                                    
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass'">
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.background, color: alt_colors.background}" class="md-dense md-primary" style="margin-left: 0px;" v-on:click="showDropDown=true;colorChoosing='background';">
+                    Background
+                </md-button>
+                <br>
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.glass, color: alt_colors.glass}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='glass';">
                     Glass color
                 </md-button>
                 <br>
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.grid, color: alt_colors.grid}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='grid'">
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.grid, color: alt_colors.grid}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='grid';this.colorPicker.subPalette=undefined">
                     Grid color
                 </md-button>
                 <br>
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.figure, color: alt_colors.figure}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='figure'">
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.figure, color: alt_colors.figure}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='figure';this.colorPicker.subPalette=undefined">
                     Figure color
                 </md-button>
                 <br>
-                <md-button v-on:click.stop="" v-bind:style="{ background: colors.fill, color: alt_colors.fill}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='fill'">
+                <md-button v-on:click.stop="" v-bind:style="{ background: colors.fill, color: alt_colors.fill}" class="md-dense md-primary" style="margin-left: 0px" v-on:click="showDropDown=true;colorChoosing='fill';">
                     Fill color
                 </md-button><br>
                 Glass opacity:<br>

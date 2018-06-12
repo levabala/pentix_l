@@ -16,6 +16,7 @@ var renderer_preset = {
         grid: "black",
         fill: "lightblue",
         figure: "#80aaff",
+        background: "#FFFFFF"
     },
     opacities: {
         glass: 0.3,
@@ -24,7 +25,7 @@ var renderer_preset = {
         figure: 1,
     },
     sub_grid_step: 5,
-    horizontal_sub_grid: false
+    horizontal_sub_grid: false,    
 };
 var presets = {controller_preset: controller_preset, game_preset: game_preset, renderer_preset: renderer_preset};
 
@@ -37,6 +38,9 @@ else{
     game_preset = cookie_presets.game_preset;
     renderer_preset = cookie_presets.renderer_preset;
 }
+
+//apply page background
+document.getElementById("body").style.background = renderer_preset.colors.background; 
 
 
 //init global classes
@@ -56,8 +60,9 @@ var app = new Vue({
             grid: generateAlternativeColor(renderer_preset.colors.grid),
             figure: generateAlternativeColor(renderer_preset.colors.figure),
             fill: generateAlternativeColor(renderer_preset.colors.fill),
+            background: generateAlternativeColor(renderer_preset.colors.background),
         },        
-        colorChoosing: "",
+        colorChoosing: "none",        
         showDropDown: false,
         fall_speed: 1,
         sliding_start_delay: controller_preset.sliding_start_delay,
@@ -70,7 +75,8 @@ var app = new Vue({
         fill_chance: game_preset.fill_chance,
         game_duration: "0m:0s:0ms",     
         horizontal_sub_grid: renderer_preset.horizontal_sub_grid,
-        preview_height: 100
+        preview_height: 100,
+        hide_interface: false,                
     },
     watch: {
         filled_lines: function(value, oldValue){
@@ -98,13 +104,24 @@ var app = new Vue({
     },
     methods: {
         changeColor: function(event){            
-            var color = event.detail[0];
+            var color = event.detail[0];            
             this.$refs.colorPicker.value = color;
             this.color = color;
 
             var alt = generateAlternativeColor(color);
             this.alternative_color = alt;      
             
+            if (this.colorChoosing == "background"){
+                var body = document.getElementById("body");
+                body.style.background = color;           
+                body.style.color = alt;
+                this.alt_color_background = alt;     
+                renderer_preset.background = color;
+                return;           
+            }
+
+            if (!(this.colorChoosing in this.colors))
+                return;
             this.colors[this.colorChoosing] = color;
             this.alt_colors[this.colorChoosing] = alt;
 
@@ -136,6 +153,10 @@ var app = new Vue({
         updateSubGrid: function(){
             renderer.sub_grid_step = parseInt(this.sub_grid_step);
             renderer.reset();
+        },
+        resetPalette: function(){
+            var picker = document.getElementById("colorPicker");
+            picker.subPalette = undefined;            
         }
     },
     created: function() {
@@ -169,14 +190,16 @@ var renderer_preview = new Renderer(document.getElementById("div_figure_preview"
 //connect renderers to controller
 controller.renderers = [renderer, renderer_preview];
 
-//start game
+//init rendering
 renderer.init();
 renderer_preview.init();
-game.start();
 
 //cookies save interval
-setTimeout(() => setInterval(saveCookies, 1999), 0);
+var doCookies = true;
+setTimeout(() => {setInterval(saveCookies, 1999)}, 0);
 function saveCookies(){
+    if (!doCookies) 
+        return;
     var presets = {
         controller_preset: {
             sliding_start_delay: controller.sliding_start_delay,
@@ -194,9 +217,14 @@ function saveCookies(){
             colors: renderer.colors,
             opacities: renderer.opacities,
             sub_grid_step: renderer.sub_grid_step,
-            horizontal_sub_grid: renderer.horizontal_sub_grid
+            horizontal_sub_grid: renderer.horizontal_sub_grid,
+            background: renderer_preset.background
         }
     };
     Cookies.set("presets", presets);               
 }
 
+function clearCookies(){
+    doCookies = false;
+    Cookies.remove("presets");               
+}
