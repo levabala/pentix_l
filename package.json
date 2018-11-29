@@ -1,0 +1,24 @@
+{
+  "name": "pentix_l",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start_server": "live-server --port=3030"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levabala/pentix_l.git"
+  },
+  "author": "levabala",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/levabala/pentix_l/issues"
+  },
+  "homepage": "https://github.com/levabala/pentix_l#readme"
+}
